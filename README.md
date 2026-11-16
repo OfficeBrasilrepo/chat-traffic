@@ -29,6 +29,26 @@ git clone https://github.com/OfficeBrasilrepo/chat-traffic ~/.claude/skills/chat
 
 Depois abra um chat novo na aba Code e diga "começar projeto" (ou "retomar projeto"). Também dá para chamar com `/chat-traffic`.
 
+## Alarme (opcional, recomendado)
+
+Um gancho que, ao abrir um chat, confere o `CONTINUAR.md` do projeto: grande demais, reserva esquecida há mais de 24 h, publicação esperando, resposta sua pendente. **Só escreve se houver problema**, então não gasta tokens no dia a dia. Precisa de Python. Acrescente em `~/.claude/settings.json` (ou peça ao Claude: a skill oferece instalar):
+
+```json
+"hooks": {
+  "SessionStart": [
+    { "hooks": [ { "type": "command", "command": "python \"$HOME/.claude/skills/chat-traffic/scripts/alarme.py\"" } ] }
+  ]
+}
+```
+
+## Medição
+
+No fim de cada tarefa a skill anota uma linha em `chat-traffic-uso.csv` (na raiz do projeto). Para ver se está compensando:
+
+```
+python ~/.claude/skills/chat-traffic/scripts/relatorio.py
+```
+
 ## Atualizar
 
 ```

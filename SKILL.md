@@ -5,6 +5,8 @@ description: Organiza um projeto entre vários chats do app Claude (aba Code) ga
 
 # chat-traffic (projeto entre chats)
 
+Objetivo, acima de tudo: **economizar tokens sem perder qualidade**, delegar só a quem dá conta da tarefa, e manter os chats abertos organizados.
+
 Responda em português simples. **Toda pergunta ao usuário vai em botões clicáveis**, nunca só escrita no texto: no meio do trabalho, AskUserQuestion com respostas prontas; no fim do turno, o quadro de próximo passo (`wrap_up` com pergunta + botões). Nunca termine a mensagem com "Quer que eu...?" sem os botões, nem peça texto digitado na caixinha. (No texto, o usuário precisa perceber sozinho que é pergunta; o quadro deixa claro que você espera a resposta.)
 
 ## Os 4 arquivos (raiz do projeto, todos curtos)
@@ -20,20 +22,23 @@ Modelos em `modelos/` nesta pasta da skill.
 
 ## 1. Projeto novo (não há CONTINUAR.md nem git com histórico)
 
+Antes de tudo: tarefa que cabe numa conversa só (um script, um ajuste de poucos arquivos, sem volta prevista)? Não crie nada; diga em uma linha que não compensa. Senão:
+
 1. Pergunte com botões, num só AskUserQuestion (até 4 perguntas, opções prováveis + "Outro"):
    - O que é o projeto (tipo: app web, script, planilha, outro).
    - Regras que nunca podem ser quebradas (ex.: não apagar sem OK, não mexer em produção sem OK, dados sensíveis).
    - Como testar (testes automáticos, abrir a tela, cópia de teste, ainda não sei).
    - Como publicar (não publica, branch principal, comando, manual pelo dono).
 2. Crie os 4 arquivos a partir dos modelos, preenchendo `COMBINADOS.md` com as respostas (decisões com a data de hoje). Se não for repositório git, rode `git init` e faça o primeiro commit.
-3. Tarefa que cabe numa conversa só (um script, um ajuste de poucos arquivos, sem volta prevista): não crie nada; diga em uma linha que não compensa.
+3. Ofereça uma vez (botões) instalar o **alarme** se `~/.claude/settings.json` não existe ou não cita `chat-traffic/scripts/alarme.py` (instrução no `README.md` da skill).
 
 ## 2. Projeto existente
 
-1. Leia `CLAUDE.md`, o topo do `CONTINUAR.md` e `git log --oneline -15`.
-2. Falta algum dos 4 arquivos? Monte o que faltar a partir do git (log, README, estrutura) sem perguntar o que dá para deduzir; pergunte com botões só regras e publicação, se não houver pista.
-3. `CONTINUAR.md` sem `Versão:` nem `## EM USO`: acrescente os dois no topo, como no modelo (`Versão: 1`).
-4. `CONTINUAR.md` com mais de ~10 mil caracteres (`wc -c`): **limpe antes de trabalhar**, com reserva (seção 4) de `CONTINUAR.md` e `HISTORICO.md`. Mova o que está concluído, sem mudar uma letra, para o fim do `HISTORICO.md` (com a data da mudança). Nada é apagado: confira que as linhas não vazias movidas batem (`diff`). Commit próprio da limpeza.
+1. Leia `CLAUDE.md`, o topo do `CONTINUAR.md` e `git log --oneline -15`. Se o chat abriu com `[chat-traffic] Avisos`, resolva-os primeiro (o alarme só fala quando há problema). Sem alarme instalado, ofereça como na seção 1.
+2. Renomeie este chat para `<projeto> · <tarefa>` (`set_session_title`, `self`, no mesmo passo da leitura), para a barra lateral mostrar qual é qual.
+3. Falta algum dos 4 arquivos? Monte o que faltar a partir do git (log, README, estrutura) sem perguntar o que dá para deduzir; pergunte com botões só regras e publicação, se não houver pista.
+4. `CONTINUAR.md` sem `Versão:` nem `## EM USO`: acrescente os dois no topo, como no modelo (`Versão: 1`).
+5. `CONTINUAR.md` com mais de ~10 mil caracteres (`wc -c`): **limpe antes de trabalhar**, com reserva (seção 4) de `CONTINUAR.md` e `HISTORICO.md`. Mova o que está concluído para o fim do `HISTORICO.md`, embaixo de um título `## Movido em AAAA-MM-DD`, cada linha sem mudar uma letra. `HISTORICO.md` reservado por outro chat: limpe depois. Nada é apagado: confira que as linhas não vazias movidas batem (`diff`). Commit próprio da limpeza.
 
 ## 3. Em cada tarefa: onde fazer
 
@@ -42,11 +47,13 @@ Veja o tamanho deste chat com `get_usage` (ferramenta do app; carregue se estive
 1. **Aqui**: tarefa curta (até ~12 passos) ou este chat com menos de ~120 mil de contexto.
 2. **Subagente** (ferramenta Agent, com `model`): pedaço desta tarefa cujo resultado você precisa já (ler muitos arquivos, buscar, revisar, testar). Ele trabalha à parte e devolve só o resumo, então este chat não engorda. Sonnet/Haiku para leitura e busca; o mesmo modelo deste chat para revisão. Não serve para trabalho que deve durar além deste turno, que o usuário quer acompanhar ou que publica.
 3. **Chat parado do mesmo assunto** (`list_sessions`, ocioso): `SendMessage` com resumo curto. Barato **só se** ele parou há menos de 1 hora **ou** tem menos de ~100 mil de contexto (ver "cache" abaixo). Nunca para chat ocupado.
-4. **Chat novo** (`start_session`, `cwd` na raiz, resumo "Leia CLAUDE.md e faça X; pronto quando Y"): tarefa longa (~12 passos ou mais) saindo de chat acima de ~150 mil; ou trabalho que é uma entrega própria (branch, PR, publicação); ou depois de uma pausa longa num chat grande. Escolha modelo **e** esforço (`effort`):
+4. **Chat novo** (`start_session`, `cwd` na raiz, `title` `<projeto> · <tarefa>`): tarefa longa (~12 passos ou mais) saindo de chat acima de ~150 mil; ou trabalho que é uma entrega própria (branch, PR, publicação); ou depois de uma pausa longa num chat grande. Escolha modelo **e** esforço (`effort`):
    - Sonnet, esforço baixo/médio: mecânica, leitura, relatório, ajuste repetitivo.
    - Opus, esforço médio: código comum do projeto.
    - Opus, esforço alto: desenho, dinheiro, produção, código difícil, bug que não se acha.
    - Nunca acima do modelo deste chat sem o usuário pedir.
+
+Para subagente, chat parado ou chat novo, escreva o pedido pelo `modelos/resumo.md` (curto: o que fazer, arquivos, pronto quando, o que não mexer). Na dúvida entre duas opções, fique com a de menos passagens: cada passagem perde detalhe.
 
 **Cache (o que decide a conta).** Reler o que está no cache custa 10%; gravar no cache custa ~200% (no app o cache dura 1 hora). Cada passo relê o chat inteiro: num chat de 280 mil, ~28 mil por passo. Chat novo: ~65 mil gravados (~130 mil) + ~3 passos do chat grande para passar a tarefa e receber o aviso.
 - Tarefa de 5 passos: separar sai ~70% mais caro. 10 passos: empate. 20 passos: economiza ~33%. 40 passos: ~43%.
@@ -66,8 +73,8 @@ EM USO: <outro chat> · <outros arquivos> · desde <...>
 ```
 
 - **Ao ler**, guarde o número da versão.
-- **Antes de gravar** (inclusive a própria reserva), releia só a linha `Versão:`. Mudou? Releia o topo, junte sua mudança com a nova e só então grave. Toda gravação depois da criação soma 1 na versão.
-- **Reserva**: antes de mexer em arquivos, acrescente sua linha `EM USO:` na seção `## EM USO` (uma linha por chat; a hora vem do comando `date`; sem nenhuma reserva, escreva `(nenhum)`). Se outra linha já reserva os mesmos arquivos, não mexa: trabalhe em outra coisa ou pergunte. Linha com mais de 24 h vale como abandonada: **pergunte com botões** antes de assumir.
+- **Ao gravar** (inclusive a própria reserva), use a ferramenta Edit, não o shell: ela recusa se o arquivo mudou desde a sua leitura, sem passo extra. Recusou ou a `Versão:` mudou? Releia o topo, junte sua mudança com a nova e grave. Toda gravação depois da criação soma 1 na versão.
+- **Reserva**: antes de mexer em arquivos, acrescente sua linha `EM USO:` na seção `## EM USO` (uma linha por chat; a hora vem de `date '+%Y-%m-%d %H:%M'`; sem nenhuma reserva, escreva `(nenhum)`). Se outra linha já reserva os mesmos arquivos, não mexa: trabalhe em outra coisa ou pergunte. Linha com mais de 24 h vale como abandonada: **pergunte com botões** antes de assumir. Com o OK, troque a linha dela pela sua (a única vez em que se mexe na linha de outro chat); sem OK, faça outra coisa.
 - Cada chat só altera **a própria** linha `EM USO:`.
 - **Commit a cada gravação** do `CONTINUAR.md` (só os arquivos que você mudou; nunca `git add -A` com outros chats na pasta).
 
@@ -93,7 +100,10 @@ Com vários chats abertos, uma pergunta perdida trava tudo. Por isso:
 1. Em `ESTADO ATUAL`, no topo da lista: uma linha com data e o que ficou valendo (o que mudou, o que falta, o que não foi conferido). Tire sua linha `EM USO:`.
 2. Pendência concluída sai do `CONTINUAR.md` e vai para o fim do `HISTORICO.md` como `- AAAA-MM-DD: <texto igual>`. Linhas velhas do `ESTADO ATUAL` que já não valem vão do mesmo jeito.
 3. Regra ou decisão nova: no `COMBINADOS.md`, com data (e na memória, só se for regra que vale para outros projetos).
-4. Um commit só com os arquivos que mudaram.
-5. **Chat que não é mais necessário** (este, com a tarefa terminada e acima de ~60% do contexto ou sem trabalho previsto; ou um chat que ele abriu e que já acabou): depois de gravar tudo no `CONTINUAR.md` (e na memória, se houver regra nova), peça para arquivar no quadro de próximo passo, com pergunta e botões. Se a ação `archive` estiver disponível no `wrap_up`, use-a; senão, botões de resposta ("Pode arquivar" / "Ainda não") e explique que se arquiva pelo menu do chat. O próximo chat começa lendo o `CLAUDE.md`.
+4. **Medição**: acrescente uma linha em `chat-traffic-uso.csv` (raiz; crie com o cabeçalho se faltar):
+   `data,chat,tarefa,onde,modelo,esforco,passos,contexto_inicio,contexto_fim,plano5h_inicio,plano5h_fim`
+   `onde` = aqui | subagente | chat-parado | chat-novo. Os números vêm do `get_usage`: o do fim, chamado **no mesmo passo** de outra ferramenta (não custa passo extra); o do começo, só se você já o chamou na seção 3 (senão, deixe vazio). Nunca gaste um passo só para medir. Para ver o resultado: `python ~/.claude/skills/chat-traffic/scripts/relatorio.py`.
+5. Um commit só com os arquivos que mudaram.
+6. **Chat que não é mais necessário** (este, com a tarefa terminada e acima de ~60% do contexto ou sem trabalho previsto; ou um chat que ele abriu e que já acabou): depois de gravar tudo no `CONTINUAR.md` (e na memória, se houver regra nova), peça para arquivar no quadro de próximo passo, com pergunta e botões. Se a ação `archive` estiver disponível no `wrap_up`, use-a; senão, botões de resposta ("Pode arquivar" / "Ainda não") e explique que se arquiva pelo menu do chat. O próximo chat começa lendo o `CLAUDE.md`.
 
 Trabalho interrompido no meio vira pendência escrita no `CONTINUAR.md` na hora.
