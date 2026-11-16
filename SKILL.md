@@ -36,7 +36,7 @@ Antes de tudo: tarefa que cabe numa conversa só (um script, um ajuste de poucos
 
 1. Leia `CLAUDE.md`, o topo do `CONTINUAR.md` e `git log --oneline -15`. Se o chat abriu com `[chat-traffic] Avisos`, resolva-os primeiro. Sem alarme instalado, ofereça como na seção 1.
 2. Renomeie este chat para `<projeto> · <tarefa>` (`set_session_title`, `self`) e ponha-o no grupo `<projeto>` da barra lateral (`list_groups`; sem grupo, `create_group`; `move_sessions` com `self`; recusou por estar aninhado: inclua o chat pai que o erro nomeia, se for do projeto; senão, fique sem grupo), tudo no mesmo passo da leitura.
-3. Falta algum dos 4 arquivos? Monte o que faltar a partir do git (log, README, estrutura) sem perguntar o que dá para deduzir; pergunte com botões só regras e publicação, se não houver pista.
+3. Falta algum dos 4 arquivos? Monte o que faltar a partir do git (log, README, estrutura) sem perguntar o que dá para deduzir; pergunte com botões só regras e publicação, se não houver pista. `CLAUDE.md` sem a linha "Use a skill `chat-traffic`": copie-a do modelo.
 4. `CONTINUAR.md` sem `Versão:` nem `## EM USO`: acrescente os dois no topo, como no modelo (`Versão: 1`).
 5. `CONTINUAR.md` com mais de ~10 mil caracteres: **limpe antes de trabalhar** (`HISTORICO.md` reservado por outro chat: limpe depois). Escolha os números das linhas concluídas e rode, na pasta do arquivo, `python ~/.claude/skills/chat-traffic/scripts/limpar.py --versao <N lida> 12-40 55`: ele move sem mudar uma letra para o `HISTORICO.md`, confere que nada se perdeu, soma 1 na versão e recusa se outro chat gravou. Commit próprio da limpeza.
 
@@ -56,7 +56,7 @@ Veja o tamanho deste chat com `get_usage` (ferramenta do app; carregue se estive
 Para subagente, chat parado ou chat novo, escreva o pedido pelo `modelos/resumo.md` (curto: o que fazer, arquivos, pronto quando, o que não mexer). Na dúvida entre duas opções, fique com a de menos passagens: cada passagem perde detalhe.
 
 **Cache (o que decide a conta).** Reler o que está no cache custa 10%; gravar no cache custa ~200% (no app o cache dura 1 hora). Cada passo relê o chat inteiro: num chat de 280 mil, ~28 mil por passo. Chat novo: ~65 mil gravados (~130 mil) + ~3 passos do chat grande para passar a tarefa e receber o aviso.
-- **Chat parado há mais de 1 hora perdeu o cache**: acordá-lo regrava tudo a ~200%. Por isso, depois de pausa longa, chat grande com tarefa nova → chat novo (com o `CONTINUAR.md` em dia, nada se perde).
+- **Chat parado há mais de 1 hora perdeu o cache**: acordá-lo regrava tudo a ~200%. Depois de pausa longa, chat grande com tarefa nova → chat novo.
 - Não passe a **publicação** para outro chat: ele redescobre tudo e corre risco.
 
 ## 4. Sem conflito entre chats
