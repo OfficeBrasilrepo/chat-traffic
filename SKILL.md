@@ -37,16 +37,21 @@ Modelos em `modelos/` nesta pasta da skill.
 
 ## 3. Em cada tarefa: onde fazer
 
-Veja o tamanho deste chat com `get_usage` (ferramenta do app; carregue se estiver adiada) quando a tarefa for longa. Sem essa ferramenta (fora do app), estime pelo tamanho da conversa e fique aqui na dúvida.
+Veja o tamanho deste chat com `get_usage` (ferramenta do app; carregue se estiver adiada) quando a tarefa for longa. Sem essa ferramenta (fora do app), estime pelo tamanho da conversa e fique aqui na dúvida. Escolha a primeira opção que serve:
 
-- **Tarefa curta** (até ~8 passos) ou chat com menos de ~120 mil de contexto: **aqui**.
-- **Mesmo assunto de um chat parado** (`list_sessions`, estado ocioso): mande para ele com `SendMessage` (resumo curto, apontando arquivos). É o mais barato: não redescobre nada. Nunca para chat ocupado.
-- **Tarefa longa num chat grande** (acima de ~150 mil): **chat novo** com `start_session`, `cwd` na raiz do projeto, resumo curto ("Leia CLAUDE.md e faça X; pronto quando Y"). Modelo e esforço:
-  - Sonnet ou esforço menor: tarefa mecânica, só leitura, busca, relatório.
-  - Opus: desenho, dinheiro, produção, código difícil.
-  - Nunca acima do modelo deste chat sem o usuário pedir.
+1. **Aqui**: tarefa curta (até ~12 passos) ou este chat com menos de ~120 mil de contexto.
+2. **Subagente** (ferramenta Agent, com `model`): pedaço desta tarefa cujo resultado você precisa já (ler muitos arquivos, buscar, revisar, testar). Ele trabalha à parte e devolve só o resumo, então este chat não engorda. Sonnet/Haiku para leitura e busca; o mesmo modelo deste chat para revisão. Não serve para trabalho que deve durar além deste turno, que o usuário quer acompanhar ou que publica.
+3. **Chat parado do mesmo assunto** (`list_sessions`, ocioso): `SendMessage` com resumo curto. Barato **só se** ele parou há menos de 1 hora **ou** tem menos de ~100 mil de contexto (ver "cache" abaixo). Nunca para chat ocupado.
+4. **Chat novo** (`start_session`, `cwd` na raiz, resumo "Leia CLAUDE.md e faça X; pronto quando Y"): tarefa longa (~12 passos ou mais) saindo de chat acima de ~150 mil; ou trabalho que é uma entrega própria (branch, PR, publicação); ou depois de uma pausa longa num chat grande. Escolha modelo **e** esforço (`effort`):
+   - Sonnet, esforço baixo/médio: mecânica, leitura, relatório, ajuste repetitivo.
+   - Opus, esforço médio: código comum do projeto.
+   - Opus, esforço alto: desenho, dinheiro, produção, código difícil, bug que não se acha.
+   - Nunca acima do modelo deste chat sem o usuário pedir.
 
-Por quê (medido): um chat novo começa com ~60 mil tokens fixos; cada passo num chat de 280 mil custa ~28 mil (cache a 10%); separar custa ~180–250 mil e economiza ~18 mil por passo. Só compensa em tarefa longa saindo de chat grande. Não passe a **publicação** para outro chat: ele redescobre tudo e corre risco.
+**Cache (o que decide a conta).** Reler o que está no cache custa 10%; gravar no cache custa ~200% (no app o cache dura 1 hora). Cada passo relê o chat inteiro: num chat de 280 mil, ~28 mil por passo. Chat novo: ~65 mil gravados (~130 mil) + ~3 passos do chat grande para passar a tarefa e receber o aviso.
+- Tarefa de 5 passos: separar sai ~70% mais caro. 10 passos: empate. 20 passos: economiza ~33%. 40 passos: ~43%.
+- **Chat parado há mais de 1 hora perdeu o cache**: acordá-lo regrava tudo a ~200%. Voltar a um chat de 280 mil depois do almoço custa ~560 mil de uma vez, contra ~130 mil de um chat novo. Por isso, depois de pausa longa, chat grande com tarefa nova → chat novo (com o `CONTINUAR.md` em dia, nada se perde).
+- Não passe a **publicação** para outro chat: ele redescobre tudo e corre risco.
 
 ## 4. Sem conflito entre chats
 
