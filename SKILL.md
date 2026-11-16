@@ -7,7 +7,7 @@ description: Organiza um projeto entre vários chats do app Claude (aba Code) ga
 
 Objetivo, acima de tudo: **economizar tokens sem perder qualidade**, delegar só a quem dá conta da tarefa, e manter os chats abertos organizados.
 
-Responda em português simples. **Toda pergunta ao usuário vai em botões clicáveis**, nunca só escrita no texto: no meio do trabalho, AskUserQuestion com respostas prontas; no fim do turno, o quadro de próximo passo (`wrap_up` com pergunta + botões). Nunca termine a mensagem com "Quer que eu...?" sem os botões, nem peça texto digitado na caixinha. (No texto, o usuário precisa perceber sozinho que é pergunta; o quadro deixa claro que você espera a resposta.)
+Responda em português simples. **Toda pergunta ao usuário vai em botões clicáveis**, nunca só escrita no texto: no meio do trabalho, AskUserQuestion com respostas prontas; no fim do turno, o quadro de próximo passo (`wrap_up` com pergunta + botões). Nunca termine a mensagem com "Quer que eu...?" sem os botões, nem peça texto digitado na caixinha.
 
 ## Os 4 arquivos (raiz do projeto, todos curtos)
 
@@ -29,16 +29,16 @@ Antes de tudo: tarefa que cabe numa conversa só (um script, um ajuste de poucos
    - Regras que nunca podem ser quebradas (ex.: não apagar sem OK, não mexer em produção sem OK, dados sensíveis).
    - Como testar (testes automáticos, abrir a tela, cópia de teste, ainda não sei).
    - Como publicar (não publica, branch principal, comando, manual pelo dono).
-2. Crie os 4 arquivos a partir dos modelos, preenchendo `COMBINADOS.md` com as respostas (decisões com a data de hoje). Se não for repositório git, rode `git init` e faça o primeiro commit.
+2. Crie os 4 arquivos a partir dos modelos, preenchendo `COMBINADOS.md` com as respostas (decisões com a data de hoje), e copie `modelos/.gitattributes` (tira o aviso de fim de linha do Windows; só em projeto novo, nunca em existente). Sem git: `git init`; sem `git config user.name`, pergunte o nome com botões. Primeiro commit.
 3. Ofereça uma vez (botões) instalar o **alarme** se `~/.claude/settings.json` não existe ou não cita `chat-traffic/scripts/alarme.py` (instrução no `README.md` da skill).
 
 ## 2. Projeto existente
 
 1. Leia `CLAUDE.md`, o topo do `CONTINUAR.md` e `git log --oneline -15`. Se o chat abriu com `[chat-traffic] Avisos`, resolva-os primeiro (o alarme só fala quando há problema). Sem alarme instalado, ofereça como na seção 1.
-2. Renomeie este chat para `<projeto> · <tarefa>` (`set_session_title`, `self`, no mesmo passo da leitura), para a barra lateral mostrar qual é qual.
+2. Renomeie este chat para `<projeto> · <tarefa>` (`set_session_title`, `self`) e ponha-o no grupo `<projeto>` da barra lateral (`list_groups`; sem grupo, `create_group`; `move_sessions` com `self`), tudo no mesmo passo da leitura. Assim os chats de cada projeto ficam juntos e se vê de longe qual espera você.
 3. Falta algum dos 4 arquivos? Monte o que faltar a partir do git (log, README, estrutura) sem perguntar o que dá para deduzir; pergunte com botões só regras e publicação, se não houver pista.
 4. `CONTINUAR.md` sem `Versão:` nem `## EM USO`: acrescente os dois no topo, como no modelo (`Versão: 1`).
-5. `CONTINUAR.md` com mais de ~10 mil caracteres (`wc -c`): **limpe antes de trabalhar**, com reserva (seção 4) de `CONTINUAR.md` e `HISTORICO.md`. Mova o que está concluído para o fim do `HISTORICO.md`, embaixo de um título `## Movido em AAAA-MM-DD`, cada linha sem mudar uma letra. `HISTORICO.md` reservado por outro chat: limpe depois. Nada é apagado: confira que as linhas não vazias movidas batem (`diff`). Commit próprio da limpeza.
+5. `CONTINUAR.md` com mais de ~10 mil caracteres: **limpe antes de trabalhar** (`HISTORICO.md` reservado por outro chat: limpe depois). Escolha os números das linhas concluídas e rode, na pasta do arquivo, `python ~/.claude/skills/chat-traffic/scripts/limpar.py --versao <N lida> 12-40 55`: ele move sem mudar uma letra para o `HISTORICO.md`, confere que nada se perdeu, soma 1 na versão e recusa se outro chat gravou. Commit próprio da limpeza.
 
 ## 3. Em cada tarefa: onde fazer
 
@@ -80,7 +80,7 @@ EM USO: <outro chat> · <outros arquivos> · desde <...>
 
 ## 5. Publicar
 
-Cada chat publica o próprio trabalho, seguindo o `COMBINADOS.md` (inclusive pedir OK, se a regra pedir). Dois chats no mesmo arquivo: um depois do outro (a reserva diz quem vai primeiro).
+Cada chat publica o próprio trabalho, seguindo o `COMBINADOS.md` (inclusive pedir OK, se a regra pedir). Sem regra de publicação no `COMBINADOS.md` (ou "perguntar ao dono"): não publique; pergunte com botões (ex.: "Não publica", "Commit na main", "Push", "Eu publico") e grave a resposta lá como decisão, para não perguntar de novo. Dois chats no mesmo arquivo: um depois do outro (a reserva diz quem vai primeiro).
 
 **Nada fica sem publicar porque outro chat está em andamento.** Se você terminou e não pode publicar ainda (outro chat reservou o mesmo arquivo ou vai publicar antes):
 1. Escreva no `CONTINUAR.md`, seção `## EM USO`: `AGUARDA PUBLICAR: <seu chat> · <o quê, branch/commit> · depois de <outro chat>`.
