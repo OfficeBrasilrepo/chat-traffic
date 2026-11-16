@@ -30,13 +30,14 @@ Antes de tudo: tarefa que cabe numa conversa só (um script, um ajuste de poucos
    - Como testar (testes automáticos, abrir a tela, cópia de teste, ainda não sei).
    - Como publicar (não publica, branch principal, comando, manual pelo dono).
 2. Crie os 4 arquivos a partir dos modelos, preenchendo `COMBINADOS.md` com as respostas (decisões com a data de hoje), e copie `modelos/.gitattributes` (tira o aviso de fim de linha do Windows; só em projeto novo, nunca em existente). Sem git: `git init`; sem `git config user.name`, botões com o nome que você já sabe e "Outro" (aí peça para digitar na caixa de mensagem do chat); grave na pasta `user.name` e, se faltar, `user.email` (o da conta, ou `<nome>@local`). Primeiro commit.
-3. Ofereça uma vez (botões) instalar o **alarme** se `~/.claude/settings.json` não existe ou não cita `chat-traffic/scripts/alarme.py` (instrução no `README.md` da skill).
+3. Sem `chat-traffic` em `~/.claude/CLAUDE.md`: acrescente no fim, sem perguntar, a linha do `README.md` ("Em projeto com `CONTINUAR.md`...") e avise em uma frase.
+4. Ofereça uma vez (botões) instalar o **alarme** se `~/.claude/settings.json` não existe ou não cita `chat-traffic/scripts/alarme.py` (instrução no `README.md` da skill).
 
 ## 2. Projeto existente
 
-1. Leia `CLAUDE.md`, o topo do `CONTINUAR.md` e `git log --oneline -15`. Se o chat abriu com `[chat-traffic] Avisos`, resolva-os primeiro. Sem alarme instalado, ofereça como na seção 1.
+1. Leia `CLAUDE.md`, o topo do `CONTINUAR.md` e `git log --oneline -15`. Se o chat abriu com `[chat-traffic] Avisos`, resolva-os primeiro. Faça os passos 3 e 4 da seção 1.
 2. Renomeie este chat para `<projeto> · <tarefa>` (`set_session_title`, `self`) e ponha-o no grupo `<projeto>` da barra lateral (`list_groups`; sem grupo, `create_group`; `move_sessions` com `self`; recusou por estar aninhado: inclua o chat pai que o erro nomeia, se for do projeto; senão, fique sem grupo), tudo no mesmo passo da leitura.
-3. Falta algum dos 4 arquivos? Monte o que faltar a partir do git (log, README, estrutura) sem perguntar o que dá para deduzir; pergunte com botões só regras e publicação, se não houver pista. `CLAUDE.md` sem a linha "Use a skill `chat-traffic`": copie-a do modelo.
+3. Falta algum dos 4 arquivos? Monte o que faltar a partir do git (log, README, estrutura) sem perguntar o que dá para deduzir; pergunte com botões só regras e publicação, se não houver pista.
 4. `CONTINUAR.md` sem `Versão:` nem `## EM USO`: acrescente os dois no topo, como no modelo (`Versão: 1`).
 5. `CONTINUAR.md` com mais de ~10 mil caracteres: **limpe antes de trabalhar** (`HISTORICO.md` reservado por outro chat: limpe depois). Escolha os números das linhas concluídas e rode, na pasta do arquivo, `python ~/.claude/skills/chat-traffic/scripts/limpar.py --versao <N lida> 12-40 55`: ele move sem mudar uma letra para o `HISTORICO.md`, confere que nada se perdeu, soma 1 na versão e recusa se outro chat gravou. Commit próprio da limpeza.
 

@@ -27,6 +27,12 @@ Mac/Linux:
 git clone https://github.com/OfficeBrasilrepo/chat-traffic ~/.claude/skills/chat-traffic
 ```
 
+E acrescente esta linha em `~/.claude/CLAUDE.md` (lido em todo chat, em qualquer pasta, e de novo depois que a conversa é compactada; sem ela a skill é esquecida no meio do projeto). Se esquecer, a skill acrescenta sozinha no primeiro uso:
+
+```
+Em projeto com `CONTINUAR.md`, use a skill `chat-traffic`: ao começar, ao decidir onde fazer cada tarefa e no fim de cada tarefa, inclusive depois de a conversa ser compactada.
+```
+
 Depois abra um chat novo na aba Code e diga "começar projeto" (ou "retomar projeto"). Também dá para chamar com `/chat-traffic`.
 
 ## Alarme (opcional, recomendado)
