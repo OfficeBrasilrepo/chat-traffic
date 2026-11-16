@@ -11,3 +11,7 @@ Toda mudança passa por esta conferência antes do commit:
 5. **Ainda compensa?** Com uma semana de `chat-traffic-uso.csv`, rode `python scripts/relatorio.py` e compare com a semana anterior. Regra que não se paga sai.
 
 Registre a mudança e o resultado da conferência na mensagem do commit.
+
+## Conta de referência (16/11/2026)
+
+Separar uma tarefa de um chat de 280 mil num chat novo: 5 passos sai ~70% mais caro; 10 passos, empate; 20 passos, economiza ~33%; 40 passos, ~43%. Daí o limite de ~12 passos da seção 3. Chat parado há mais de 1 h regrava o contexto a ~200% ao acordar.
