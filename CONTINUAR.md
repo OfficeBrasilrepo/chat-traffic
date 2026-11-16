@@ -1,4 +1,4 @@
-Versão: 6
+Versão: 7
 
 # Continuar — chat-traffic
 
@@ -6,6 +6,7 @@ Versão: 6
 (nenhum)
 
 ## ESTADO ATUAL
+- 2026-11-16: teste real (tarefa comum sem citar a skill): a IA seguiu a skill sozinha. Medição: sem `get_usage` agora grava a linha com números vazios (conta a tarefa); `relatorio.py` testado com linha vazia. Chats abertos antes das 17h10 não usam a skill até `/chat-traffic`. Não testado: chat aberto na pasta pessoal só com a linha global (próximo chat dos boletos mostra).
 - 2026-11-16: nos boletos a skill não rodava: chats abertos na pasta pessoal (C:/Users/OFFICE01) não leem o CLAUDE.md do projeto. Correção: linha da skill no `~/.claude/CLAUDE.md` global (lido em todo chat, qualquer pasta, volta depois de compactar). Instalada neste PC; README manda pôr na instalação; a skill acrescenta sozinha no primeiro uso (seção 1, passo 3). Projeto com arquivos de mesmo papel (TODO, NOTAS, AGENTS.md...): junta num só e o antigo só aponta (seção 2, passo 3). Outro PC: `git pull` + a linha.
 - 2026-11-16: skill era esquecida no meio do projeto (nenhum chat-traffic-uso.csv existia): a causa é a compactação e o chat aberto fora da pasta. Correção que vale para qualquer pessoa, sem gancho: linha "Use a skill `chat-traffic`..." no CLAUDE.md do projeto (o app o relê depois de compactar); a seção 2 a acrescenta em projeto existente. Ensaio Sonnet em projeto existente passou (trocou a linha velha e, depois de "compactar", fez o fim de tarefa pela seção 6).
 - 2026-11-16: (1) chat novo: antes, `list_sessions` do grupo; se já há chat ou cartão com a função, usa-o e não propõe outro (no outro PC o cartão apareceu duas vezes). (2) Ensaio de projeto realmente novo, sem nome no git, com Sonnet: passou; achou que o git também exige `user.email` (regra corrigida). Skill também instalada no outro PC do Matheus: avisar quando precisar atualizar lá (`git pull` na pasta da skill).

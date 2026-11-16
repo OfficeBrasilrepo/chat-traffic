@@ -35,9 +35,10 @@ def teste():
     open(p, "w", encoding="utf-8").write(COLUNAS + "\n"
         "2026-11-16,a,t1,aqui,opus,medio,4,200000,220000,10,12\n"
         "2026-11-16,b,t2,chat-novo,sonnet,baixo,20,65000,165000,12,20\n"
-        "2026-11-16,c,t3,aqui,opus,medio,6,100000,120000,20,21\n")
+        "2026-11-16,c,t3,aqui,opus,medio,6,100000,120000,20,21\n"
+        "2026-11-16,d,t4,aqui,sonnet,baixo,,,,,\n")
     l = dict((x[0], x) for x in resumo(p))
-    assert l["aqui"][1] == 2 and l["aqui"][2] == 5 and l["aqui"][4] == 1.5, l
+    assert l["aqui"][1] == 3 and l["aqui"][2] == 5 and l["aqui"][4] == 1.5, l
     assert l["chat-novo"][3] == 115000, l
     print("ok")
 
@@ -47,4 +48,7 @@ if __name__ == "__main__":
     if "--teste" in sys.argv:
         teste()
     else:
-        mostrar(resumo(sys.argv[1] if len(sys.argv) > 1 else "chat-traffic-uso.csv"))
+        arq = sys.argv[1] if len(sys.argv) > 1 else "chat-traffic-uso.csv"
+        if not os.path.isfile(arq):
+            sys.exit(f"Sem {arq} nesta pasta: rode na raiz de um projeto que já mediu tarefas.")
+        mostrar(resumo(arq))
