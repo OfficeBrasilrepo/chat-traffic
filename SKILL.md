@@ -1,9 +1,9 @@
 ---
-name: projeto-entre-chats
+name: chat-traffic
 description: Organiza um projeto entre vários chats do app Claude (aba Code) gastando poucos tokens - CLAUDE.md, CONTINUAR.md, COMBINADOS.md e HISTORICO.md, onde fazer cada tarefa, sem conflito entre chats. Use ao começar ou retomar um projeto, ao perguntar "onde paramos", ao decidir se abre chat novo, e ao terminar uma tarefa num projeto que tem CONTINUAR.md.
 ---
 
-# Projeto entre chats
+# chat-traffic (projeto entre chats)
 
 Responda em português simples. **Toda pergunta ao usuário vai em botões clicáveis**, nunca só escrita no texto: no meio do trabalho, AskUserQuestion com respostas prontas; no fim do turno, o quadro de próximo passo (`wrap_up` com pergunta + botões). Nunca termine a mensagem com "Quer que eu...?" sem os botões, nem peça texto digitado na caixinha. (No texto, o usuário precisa perceber sozinho que é pergunta; o quadro deixa claro que você espera a resposta.)
 
