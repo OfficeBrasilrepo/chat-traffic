@@ -7,7 +7,7 @@ description: Organiza um projeto entre vários chats do app Claude (aba Code) ga
 
 Objetivo, acima de tudo: **economizar tokens sem perder qualidade**, delegar só a quem dá conta da tarefa, e manter os chats abertos organizados.
 
-Responda em português simples. **Toda pergunta ao usuário vai em botões clicáveis**, nunca só escrita no texto: no meio do trabalho, AskUserQuestion com respostas prontas; no fim do turno, o quadro de próximo passo (`wrap_up` com pergunta + botões). Nunca termine a mensagem com "Quer que eu...?" sem os botões, nem peça texto digitado na caixinha.
+Responda em português simples. **Toda pergunta ao usuário vai em botões clicáveis**, nunca só escrita no texto: no meio do trabalho, AskUserQuestion com respostas prontas; no fim do turno, o quadro de próximo passo (`wrap_up` com pergunta + botões). Nunca peça texto digitado na caixinha do "Outro" (ele se perde).
 
 ## Os 4 arquivos (raiz do projeto, todos curtos)
 
@@ -29,7 +29,7 @@ Antes de tudo: tarefa que cabe numa conversa só (um script, um ajuste de poucos
    - Regras que nunca podem ser quebradas (ex.: não apagar sem OK, não mexer em produção sem OK, dados sensíveis).
    - Como testar (testes automáticos, abrir a tela, cópia de teste, ainda não sei).
    - Como publicar (não publica, branch principal, comando, manual pelo dono).
-2. Crie os 4 arquivos a partir dos modelos, preenchendo `COMBINADOS.md` com as respostas (decisões com a data de hoje), e copie `modelos/.gitattributes` (tira o aviso de fim de linha do Windows; só em projeto novo, nunca em existente). Sem git: `git init`; sem `git config user.name`, botões com o nome que você já sabe e "Outro" (aí peça para digitar na caixa de mensagem); grave com `git config user.name` na pasta. Primeiro commit.
+2. Crie os 4 arquivos a partir dos modelos, preenchendo `COMBINADOS.md` com as respostas (decisões com a data de hoje), e copie `modelos/.gitattributes` (tira o aviso de fim de linha do Windows; só em projeto novo, nunca em existente). Sem git: `git init`; sem `git config user.name`, botões com o nome que você já sabe e "Outro" (aí peça para digitar na caixa de mensagem do chat); grave na pasta `user.name` e, se faltar, `user.email` (o da conta, ou `<nome>@local`). Primeiro commit.
 3. Ofereça uma vez (botões) instalar o **alarme** se `~/.claude/settings.json` não existe ou não cita `chat-traffic/scripts/alarme.py` (instrução no `README.md` da skill).
 
 ## 2. Projeto existente
@@ -46,8 +46,8 @@ Veja o tamanho deste chat com `get_usage` (ferramenta do app; carregue se estive
 
 1. **Aqui**: tarefa curta (até ~12 passos) ou este chat com menos de ~120 mil de contexto.
 2. **Subagente** (ferramenta Agent, com `model`): pedaço desta tarefa cujo resultado você precisa já (ler muitos arquivos, buscar, revisar, testar). Ele trabalha à parte e devolve só o resumo, então este chat não engorda. Sonnet/Haiku para leitura e busca; o mesmo modelo deste chat para revisão. Não serve para trabalho que deve durar além deste turno, que o usuário quer acompanhar ou que publica.
-3. **Chat parado do mesmo assunto** (`list_sessions`, ocioso): `SendMessage` com resumo curto. Barato **só se** ele parou há menos de 1 hora **ou** tem menos de ~100 mil de contexto (ver "cache" abaixo). Nunca para chat ocupado.
-4. **Chat novo** (`start_session`, `cwd` na raiz, `title` `<projeto> · <tarefa>`): tarefa longa (~12 passos ou mais) saindo de chat acima de ~150 mil; ou trabalho que é uma entrega própria (branch, PR, publicação); ou depois de uma pausa longa num chat grande. Escolha modelo **e** esforço (`effort`):
+3. **Chat parado do mesmo assunto** (`list_sessions`, ocioso): `SendMessage` com resumo curto. Barato **só se** ele parou há menos de 1 hora **ou** tem menos de ~100 mil de contexto. Nunca para chat ocupado.
+4. **Chat novo** (`start_session`, `cwd` na raiz, `title` `<projeto> · <tarefa>`). Antes, `list_sessions` do grupo: já existe chat (ou cartão que você propôs) com essa função? Use-o ou espere; nunca proponha outro. Serve para: tarefa longa (~12 passos ou mais) saindo de chat acima de ~150 mil; ou trabalho que é uma entrega própria (branch, PR, publicação); ou depois de uma pausa longa num chat grande. Escolha modelo **e** esforço (`effort`):
    - Sonnet, esforço baixo/médio: mecânica, leitura, relatório, ajuste repetitivo.
    - Opus, esforço médio: código comum do projeto.
    - Opus, esforço alto: desenho, dinheiro, produção, código difícil, bug que não se acha.
@@ -56,7 +56,7 @@ Veja o tamanho deste chat com `get_usage` (ferramenta do app; carregue se estive
 Para subagente, chat parado ou chat novo, escreva o pedido pelo `modelos/resumo.md` (curto: o que fazer, arquivos, pronto quando, o que não mexer). Na dúvida entre duas opções, fique com a de menos passagens: cada passagem perde detalhe.
 
 **Cache (o que decide a conta).** Reler o que está no cache custa 10%; gravar no cache custa ~200% (no app o cache dura 1 hora). Cada passo relê o chat inteiro: num chat de 280 mil, ~28 mil por passo. Chat novo: ~65 mil gravados (~130 mil) + ~3 passos do chat grande para passar a tarefa e receber o aviso.
-- **Chat parado há mais de 1 hora perdeu o cache**: acordá-lo regrava tudo a ~200%. Voltar a um chat de 280 mil depois do almoço custa ~560 mil de uma vez, contra ~130 mil de um chat novo. Por isso, depois de pausa longa, chat grande com tarefa nova → chat novo (com o `CONTINUAR.md` em dia, nada se perde).
+- **Chat parado há mais de 1 hora perdeu o cache**: acordá-lo regrava tudo a ~200%. Por isso, depois de pausa longa, chat grande com tarefa nova → chat novo (com o `CONTINUAR.md` em dia, nada se perde).
 - Não passe a **publicação** para outro chat: ele redescobre tudo e corre risco.
 
 ## 4. Sem conflito entre chats
