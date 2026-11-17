@@ -1,4 +1,4 @@
-Versão: 7
+Versão: 8
 
 # Continuar — chat-traffic
 
@@ -6,6 +6,7 @@ Versão: 7
 (nenhum)
 
 ## ESTADO ATUAL
+- 2026-11-17: uso real nos boletos (dois PCs): chats renomeados, chat novo na pasta do projeto (Opus médio, certo para código), subagente usado, 4 medições gravadas. Falhas corrigidas: chat novo ficava fora do grupo (pendurado no pai sem grupo) → o chat entra no grupo antes de abrir outro; medição copiada em 3 pastas (cópias de trabalho) → só ao lado do CONTINUAR.md principal. Chats dos boletos movidos para o grupo. Quase todas as medições sem números de contexto: olhar no relatório de 23/11.
 - 2026-11-16: teste real (tarefa comum sem citar a skill): a IA seguiu a skill sozinha. Medição: sem `get_usage` agora grava a linha com números vazios (conta a tarefa); `relatorio.py` testado com linha vazia. Chats abertos antes das 17h10 não usam a skill até `/chat-traffic`. Não testado: chat aberto na pasta pessoal só com a linha global (próximo chat dos boletos mostra).
 - 2026-11-16: nos boletos a skill não rodava: chats abertos na pasta pessoal (C:/Users/OFFICE01) não leem o CLAUDE.md do projeto. Correção: linha da skill no `~/.claude/CLAUDE.md` global (lido em todo chat, qualquer pasta, volta depois de compactar). Instalada neste PC; README manda pôr na instalação; a skill acrescenta sozinha no primeiro uso (seção 1, passo 3). Projeto com arquivos de mesmo papel (TODO, NOTAS, AGENTS.md...): junta num só e o antigo só aponta (seção 2, passo 3). Outro PC: `git pull` + a linha.
 - 2026-11-16: skill era esquecida no meio do projeto (nenhum chat-traffic-uso.csv existia): a causa é a compactação e o chat aberto fora da pasta. Correção que vale para qualquer pessoa, sem gancho: linha "Use a skill `chat-traffic`..." no CLAUDE.md do projeto (o app o relê depois de compactar); a seção 2 a acrescenta em projeto existente. Ensaio Sonnet em projeto existente passou (trocou a linha velha e, depois de "compactar", fez o fim de tarefa pela seção 6).
