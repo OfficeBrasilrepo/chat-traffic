@@ -1,4 +1,4 @@
-Versão: 13
+Versão: 14
 
 # Continuar — chat-traffic
 
@@ -6,6 +6,7 @@ Versão: 13
 (nenhum)
 
 ## ESTADO ATUAL
+- 2026-11-18: revisão geral: descrição cita delegar e arquivar (gatilho); "Modelo e esforço" separado e vale para subagente e chat novo; chat esperando resposta é procurado no grupo (não em `linked`); item 6 do fim de tarefa reorganizado em tópicos; `get_usage` junto com a gravação do passo 1 (antes era circular com o commit); oferta recusada fica no COMBINADOS e não volta. Ensaio Sonnet geral: decisões certas.
 - 2026-11-18: depois de arquivar em lote (e no sucessor), o chat que fica mostra "onde o projeto está" em até 8 linhas do CONTINUAR.md: últimas entregas, aprovações, o que espera o usuário. Ensaio Sonnet com o CONTINUAR real dos boletos deu um resumo claro de 7 itens.
 - 2026-11-18: SKILL.md voltou ao teto (11,8 mil): passos de projeto novo (perguntas, arquivos, git) foram para `modelos/novo-projeto.md`. Ensaio Sonnet de projeto novo passou.
 - 2026-11-18: arquivar recusado por controle remoto: desligar com `set_remote_control` e arquivar (funcionou nos boletos; arquivar o pai leva junto os filhos terminados). Pedido feito no chat errado vai para o chat aberto do assunto pela regra do chat parado; chat arquivado não se desarquiva, chat novo lê o CONTINUAR. Matheus ligou `auto_archive_on_pr_close`; recusou arquivar parados por dias (mexeria em outros projetos).
