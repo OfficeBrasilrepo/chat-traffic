@@ -26,7 +26,7 @@ Antes de tudo: tarefa que cabe numa conversa só (um script, um ajuste de poucos
 
 1. Siga `modelos/novo-projeto.md`: 4 perguntas em botões, os 4 arquivos a partir dos modelos, git e primeiro commit.
 2. Avise em uma linha o que foi criado.
-3. Sem `chat-traffic` em `~/.claude/CLAUDE.md`: acrescente no fim, sem perguntar, a linha do `README.md` ("Em projeto com `CONTINUAR.md`...") e avise em uma frase.
+3. `~/.claude/CLAUDE.md` sem a linha do `README.md` ("Em projeto com `CONTINUAR.md`...") ou com versão antiga dela: ponha a linha atual, sem perguntar, e avise em uma frase.
 4. Ofereça uma vez (botões) ligar `auto_archive_on_pr_close` (`set_setting`: chat se arquiva quando o PR dele é juntado) e instalar o **alarme** se `~/.claude/settings.json` não existe ou não cita `chat-traffic/scripts/alarme.py` (instrução no `README.md` da skill). Recusou? Grave no `COMBINADOS.md` e não ofereça de novo.
 
 ## 2. Projeto existente
@@ -100,7 +100,7 @@ Cada chat publica o próprio trabalho, seguindo o `COMBINADOS.md` (inclusive ped
 6. **Arquivar chats** (grave tudo no `CONTINUAR.md` antes). Vale qualquer um:
    - (a) este, com a tarefa terminada e o `percentUsed` do `get_usage` do passo 4 acima de ~60% (sem a ferramenta: conversa muito longa); (b) este, sem trabalho previsto; (c) um chat aberto por este que já acabou; (d) chats do grupo parados há mais de 1 dia, todos num botão só, depois de passar ao `CONTINUAR.md` o que só existia na conversa deles (`list_events`; decisão esperada vira pendência).
    - **Nenhum outro chat aberto do projeto** (`list_sessions` com `group` = projeto, que não lista este; sem grupo, títulos `<projeto> · …`; na dúvida, trate como único)? Antes de arquivar este, proponha o sucessor com `start_session` (`own_initiative`, `cwd` na raiz, `title` `<projeto> · principal`, modelo e esforço do trabalho comum, resumo: "Leia CLAUDE.md e o topo do CONTINUAR.md, mostre ao usuário onde o projeto está (até 8 linhas) e continue").
-   - O quadro de próximo passo traz uma pergunta só: arquivar. Use a ação `archive` do `wrap_up` se houver; senão, botões ("Pode arquivar" / "Ainda não"). Arquivando outro chat (`archive_session`) e o app recusa por controle remoto: `set_remote_control` desligado e de novo. Arquivar um chat leva junto os chats terminados pendurados nele.
+   - Sugerir arquivar é sempre pergunta com botões, nunca só no texto. O quadro de próximo passo traz uma pergunta só: arquivar. Use a ação `archive` do `wrap_up` se houver; senão, botões ("Pode arquivar" / "Ainda não"). Arquivando outro chat (`archive_session`) e o app recusa por controle remoto: `set_remote_control` desligado e de novo. Arquivar um chat leva junto os chats terminados pendurados nele.
    - Depois de arquivar outros, mostre ao usuário **onde o projeto está** em até 8 linhas do `CONTINUAR.md`: últimas entregas, o que ele aprovou, o que espera por ele.
 
 Trabalho interrompido no meio vira pendência escrita no `CONTINUAR.md` na hora.
