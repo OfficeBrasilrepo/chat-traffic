@@ -1,4 +1,4 @@
-Versão: 11
+Versão: 12
 
 # Continuar — chat-traffic
 
@@ -6,6 +6,7 @@ Versão: 11
 (nenhum)
 
 ## ESTADO ATUAL
+- 2026-11-18: SKILL.md voltou ao teto (11,8 mil): passos de projeto novo (perguntas, arquivos, git) foram para `modelos/novo-projeto.md`. Ensaio Sonnet de projeto novo passou.
 - 2026-11-18: arquivar recusado por controle remoto: desligar com `set_remote_control` e arquivar (funcionou nos boletos; arquivar o pai leva junto os filhos terminados). Pedido feito no chat errado vai para o chat aberto do assunto pela regra do chat parado; chat arquivado não se desarquiva, chat novo lê o CONTINUAR. Matheus ligou `auto_archive_on_pr_close`; recusou arquivar parados por dias (mexeria em outros projetos).
 - 2026-11-18: muitos chats abertos nos boletos (8). Regra nova: chats do grupo parados há mais de 1 dia → oferecer arquivar em lote, depois de passar ao CONTINUAR.md o que só existia na conversa (o btw tinha uma publicação esperando decisão só na conversa). Primeiro uso oferece ligar `auto_archive_on_pr_close`. Publicação parada foi para `modelos/aguarda-publicar.md` (SKILL.md voltou a ~12,2 mil). O app não arquiva por ferramenta chat com controle remoto ligado: o usuário arquiva pela barra lateral.
 - 2026-11-18: modelos: Opus planeja (pedido fechado no resumo.md), Sonnet esforço médio executa (subagente ou chat novo), Opus revisa o diff e publica; Opus faz sozinho desenho, dinheiro, produção, bug difícil. Pesquisado: opusplan/trocar modelo no meio regrava o chat inteiro no cache (cada modelo tem cache próprio), então sai mais caro que delegar a Sonnet em contexto pequeno; advisor exige o chat principal em Sonnet. Medição: get_usage sempre no passo do commit (das 12 linhas dos boletos, só 2 tinham números). "Aqui" unificado em <150 mil. Ensaio Sonnet com 5 casos dos boletos: decisões certas.

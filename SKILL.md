@@ -24,12 +24,8 @@ Modelos em `modelos/` nesta pasta da skill.
 
 Antes de tudo: tarefa que cabe numa conversa só (um script, um ajuste de poucos arquivos, sem volta prevista)? Não crie nada; diga em uma linha que não compensa. Senão:
 
-1. Pergunte com botões, num só AskUserQuestion (até 4 perguntas, opções prováveis + "Outro"):
-   - O que é o projeto (tipo: app web, script, planilha, outro).
-   - Regras que nunca podem ser quebradas (ex.: não apagar sem OK, não mexer em produção sem OK, dados sensíveis).
-   - Como testar (testes automáticos, abrir a tela, cópia de teste, ainda não sei).
-   - Como publicar (não publica, branch principal, comando, manual pelo dono).
-2. Crie os 4 arquivos a partir dos modelos, preenchendo `COMBINADOS.md` com as respostas (decisões com a data de hoje), e copie `modelos/.gitattributes` (só em projeto novo). Sem git: `git init`; sem `git config user.name`, botões com o nome que você já sabe e "Outro" (aí peça para digitar na caixa de mensagem do chat); grave na pasta `user.name` e, se faltar, `user.email` (o da conta, ou `<nome>@local`). Primeiro commit.
+1. Siga `modelos/novo-projeto.md`: 4 perguntas em botões, os 4 arquivos a partir dos modelos, git e primeiro commit.
+2. Avise em uma linha o que foi criado.
 3. Sem `chat-traffic` em `~/.claude/CLAUDE.md`: acrescente no fim, sem perguntar, a linha do `README.md` ("Em projeto com `CONTINUAR.md`...") e avise em uma frase.
 4. Ofereça uma vez (botões) ligar `auto_archive_on_pr_close` (`set_setting`: chat se arquiva quando o PR dele é juntado) e instalar o **alarme** se `~/.claude/settings.json` não existe ou não cita `chat-traffic/scripts/alarme.py` (instrução no `README.md` da skill).
 
