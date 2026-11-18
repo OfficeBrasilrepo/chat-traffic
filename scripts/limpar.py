@@ -20,7 +20,7 @@ def limpar(pasta, versao_lida, escolhidas, hoje=None):
     hoje = hoje or datetime.date.today().isoformat()
     cont = os.path.join(pasta, "CONTINUAR.md")
     hist = os.path.join(pasta, "HISTORICO.md")
-    texto = open(cont, encoding="utf-8", newline="").read()
+    texto = open(cont, encoding="utf-8-sig", newline="").read()  # -sig: Bloco de Notas grava BOM
     eol = "\r\n" if "\r\n" in texto else "\n"
     linhas = texto.split(eol)
     m = re.match(r"Versão:\s*(\d+)", linhas[0])
@@ -34,7 +34,7 @@ def limpar(pasta, versao_lida, escolhidas, hoje=None):
     movidas = [linhas[n - 1] for n in sorted(escolhidas)]
     ficam = [l for i, l in enumerate(linhas, 1) if i not in escolhidas]
     ficam[0] = f"Versão: {versao_lida + 1}"
-    antigo = open(hist, encoding="utf-8", newline="").read() if os.path.isfile(hist) else "# Histórico (arquivo morto)" + eol
+    antigo = open(hist, encoding="utf-8-sig", newline="").read() if os.path.isfile(hist) else "# Histórico (arquivo morto)" + eol
     novo_hist = antigo.rstrip("\r\n") + eol + eol + f"## Movido em {hoje}" + eol + eol.join(movidas) + eol
     # conferência: toda linha não vazia de antes está em um dos dois arquivos
     cheias = lambda ls: [l for l in ls if l.strip()]
@@ -53,7 +53,9 @@ def teste():
     h = open(os.path.join(d, "HISTORICO.md"), encoding="utf-8", newline="").read()
     assert n == 2 and c.startswith("Versão: 5\r\n") and "feito" not in c and "- vale B" in c, c
     assert "## Movido em 2026-11-16\r\n- feito A\r\n- feito C\r\n" in h, h
-    for args in ((4, {3}), (5, {1})):  # versão velha; tentar mover a linha da Versão
+    open(os.path.join(d, "CONTINUAR.md"), "w", encoding="utf-8-sig", newline="").write("Versão: 5\n- feito D\n- vale E\n")
+    assert limpar(d, 5, {2}, "2026-11-16")[0] == 1  # BOM no começo não esconde a Versão
+    for args in ((4, {3}), (6, {1})):  # versão velha; tentar mover a linha da Versão
         try:
             limpar(d, *args); raise AssertionError("devia recusar")
         except SystemExit:

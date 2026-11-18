@@ -1,4 +1,4 @@
-Versão: 15
+Versão: 16
 
 # Continuar — chat-traffic
 
@@ -6,6 +6,7 @@ Versão: 15
 (nenhum)
 
 ## ESTADO ATUAL
+- 2026-11-18: /code-review da skill inteira, 10 achados corrigidos: relatório usa o contexto do fim (antes mostrava 0k) e pula linha com vírgula em vez de quebrar; .gitattributes deixa .bat/.cmd/.ps1 em CRLF; resumo.md separa chat e subagente (subagente devolve dúvida e não mexe no CONTINUAR nem comita); abrir chat não repete checagens de instalação (linha global já em contexto; oferta registrada no COMBINADOS); alarme e limpar aceitam BOM; alarme reconhece seção "PENDENTE COM …"/"ESPERANDO"; README: CSV ao lado do CONTINUAR; limpeza lê o arquivo inteiro com números. Relatório real dos boletos agora mostra contexto (aqui 136k, chat novo 319k).
 - 2026-11-18: uso real: o "consumo real Ricoh", único chat aberto dos boletos e já com a skill relida, sugeriu arquivar a si mesmo só no texto, sem conferir se era o único nem propor sucessor. Correção: a regra do único chat foi para a linha do `~/.claude/CLAUDE.md` (sempre em contexto, inclusive depois de compactar); a skill troca a linha antiga pela nova; sugerir arquivar é sempre com botões.
 - 2026-11-18: revisão geral: descrição cita delegar e arquivar (gatilho); "Modelo e esforço" separado e vale para subagente e chat novo; chat esperando resposta é procurado no grupo (não em `linked`); item 6 do fim de tarefa reorganizado em tópicos; `get_usage` junto com a gravação do passo 1 (antes era circular com o commit); oferta recusada fica no COMBINADOS e não volta. Ensaio Sonnet geral: decisões certas.
 - 2026-11-18: depois de arquivar em lote (e no sucessor), o chat que fica mostra "onde o projeto está" em até 8 linhas do CONTINUAR.md: últimas entregas, aprovações, o que espera o usuário. Ensaio Sonnet com o CONTINUAR real dos boletos deu um resumo claro de 7 itens.

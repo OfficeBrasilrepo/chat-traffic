@@ -18,8 +18,6 @@ Responda em português simples. **Toda pergunta ao usuário vai em botões clic�
 | `COMBINADOS.md` | Regras que não se quebram, decisões, como testar e publicar | Inteiro antes de mudar algo |
 | `HISTORICO.md` | Arquivo morto: o que já foi concluído | Nunca inteiro; buscar a palavra |
 
-Modelos em `modelos/` nesta pasta da skill.
-
 ## 1. Projeto novo (não há CONTINUAR.md nem git com histórico)
 
 Antes de tudo: tarefa que cabe numa conversa só (um script, um ajuste de poucos arquivos, sem volta prevista)? Não crie nada; diga em uma linha que não compensa. Senão:
@@ -27,19 +25,19 @@ Antes de tudo: tarefa que cabe numa conversa só (um script, um ajuste de poucos
 1. Siga `modelos/novo-projeto.md`: 4 perguntas em botões, os 4 arquivos a partir dos modelos, git e primeiro commit.
 2. Avise em uma linha o que foi criado.
 3. `~/.claude/CLAUDE.md` sem a linha do `README.md` ("Em projeto com `CONTINUAR.md`...") ou com versão antiga dela: ponha a linha atual, sem perguntar, e avise em uma frase.
-4. Ofereça uma vez (botões) ligar `auto_archive_on_pr_close` (`set_setting`: chat se arquiva quando o PR dele é juntado) e instalar o **alarme** se `~/.claude/settings.json` não existe ou não cita `chat-traffic/scripts/alarme.py` (instrução no `README.md` da skill). Recusou? Grave no `COMBINADOS.md` e não ofereça de novo.
+4. Ofereça uma vez (botões) ligar `auto_archive_on_pr_close` (`set_setting`: chat se arquiva quando o PR dele é juntado) e instalar o **alarme** se `~/.claude/settings.json` não existe ou não cita `chat-traffic/scripts/alarme.py` (instrução no `README.md` da skill). Grave a resposta no `COMBINADOS.md` ("ofertas da chat-traffic: …") e não ofereça de novo.
 
 ## 2. Projeto existente
 
-1. Leia `CLAUDE.md`, o topo do `CONTINUAR.md` e `git log --oneline -15`. Se o chat abriu com `[chat-traffic] Avisos`, resolva-os primeiro. Faça os passos 3 e 4 da seção 1.
+1. Leia `CLAUDE.md`, `COMBINADOS.md`, o topo do `CONTINUAR.md` e `git log --oneline -15`. Se o chat abriu com `[chat-traffic] Avisos`, resolva-os primeiro. Passo 3 da seção 1 sem ler arquivo (a linha global já aparece no contexto); passo 4 só se o `COMBINADOS.md` não registra a oferta.
 2. Renomeie este chat para `<projeto> · <tarefa>` (`set_session_title`, `self`) e ponha-o no grupo `<projeto>` da barra lateral (`list_groups`; sem grupo, `create_group`; `move_sessions` com `self`; recusou por estar aninhado: inclua o chat pai que o erro nomeia, se for do projeto; senão, fique sem grupo), tudo no mesmo passo da leitura.
-3. Arquivo com o mesmo papel de um dos 4 (TODO, NOTAS, PROGRESS, `AGENTS.md`, docs de estado)? **Nunca dois com o mesmo papel** (o chat leria tudo duas vezes): junte no da skill e deixe no antigo uma linha apontando. Falta algum dos 4? Monte o que faltar a partir do git (log, README, estrutura) sem perguntar o que dá para deduzir; pergunte com botões só regras e publicação, se não houver pista.
+3. Arquivo com o mesmo papel de um dos 4 (TODO, NOTAS, PROGRESS, `AGENTS.md`, docs de estado)? **Nunca dois com o mesmo papel**: junte no da skill e deixe no antigo uma linha apontando. Falta algum dos 4? Monte o que faltar a partir do git (log, README, estrutura) sem perguntar o que dá para deduzir; pergunte com botões só regras e publicação, se não houver pista.
 4. `CONTINUAR.md` sem `Versão:` nem `## EM USO`: acrescente os dois no topo, como no modelo (`Versão: 1`).
-5. `CONTINUAR.md` com mais de ~10 mil caracteres: **limpe antes de trabalhar** (`HISTORICO.md` reservado por outro chat: limpe depois). Escolha os números das linhas concluídas e rode, na pasta do arquivo, `python ~/.claude/skills/chat-traffic/scripts/limpar.py --versao <N lida> 12-40 55`: ele move sem mudar uma letra para o `HISTORICO.md`, confere que nada se perdeu, soma 1 na versão e recusa se outro chat gravou. Commit próprio da limpeza.
+5. `CONTINUAR.md` com mais de ~10 mil caracteres: **limpe antes de trabalhar** (`HISTORICO.md` reservado por outro chat: limpe depois). A limpeza é a exceção à leitura só do topo: leia o arquivo inteiro com números de linha, escolha as concluídas e rode, na pasta do arquivo, `python ~/.claude/skills/chat-traffic/scripts/limpar.py --versao <N lida> 12-40 55`: ele move sem mudar uma letra para o `HISTORICO.md`, confere que nada se perdeu, soma 1 na versão e recusa se outro chat gravou. Commit próprio da limpeza.
 
 ## 3. Em cada tarefa: onde fazer
 
-Veja o tamanho deste chat com `get_usage` (ferramenta do app; carregue se estiver adiada) quando a tarefa for longa: `tokensUsed` decide o custo (limites em mil abaixo), `percentUsed` o risco de compactar. Sem essa ferramenta (fora do app), estime pelo tamanho da conversa e fique aqui na dúvida. Escolha a primeira opção que serve:
+Veja o tamanho deste chat com `get_usage` quando a tarefa for longa: `tokensUsed` decide o custo (limites em mil abaixo), `percentUsed` o risco de compactar. Sem essa ferramenta (fora do app), estime pelo tamanho da conversa e fique aqui na dúvida. Escolha a primeira opção que serve:
 
 1. **Aqui**: tarefa curta (até ~12 passos) ou este chat com menos de ~150 mil de contexto.
 2. **Subagente** (ferramenta Agent, com `model`): pedaço desta tarefa cujo resultado você precisa já (ler muitos arquivos, buscar, revisar, testar). Sonnet para ler, buscar e executar pedido fechado; o mesmo modelo deste chat para revisar. Não serve para trabalho que deve durar além deste turno, que o usuário quer acompanhar ou que publica.
@@ -84,16 +82,16 @@ Cada chat publica o próprio trabalho, seguindo o `COMBINADOS.md` (inclusive ped
 
 ## Resposta pendente do usuário (nunca fica escondida)
 
-- Toda vez que o próximo passo depende do usuário (OK para publicar, escolha, aprovação), termine o turno com `wrap_up` com pergunta + botões **e `blocked: true`**, para o app marcar o chat como "esperando você" e mostrar o aviso.
+- Toda vez que o próximo passo depende do usuário (OK para publicar, escolha, aprovação), termine o turno com `wrap_up` com pergunta + botões **e `blocked: true`** (o app marca "esperando você").
 - Ao começar e ao terminar uma tarefa, veja `list_sessions` do grupo do projeto: se algum está esperando resposta do usuário, avise no seu quadro de próximo passo qual é.
-- Pendência do usuário também vai escrita no `CONTINUAR.md` (`## PENDÊNCIAS`, "esperando o usuário: …"), para não depender da memória de nenhum chat.
+- Pendência do usuário também vai escrita no `CONTINUAR.md` (`## PENDÊNCIAS`, "esperando o usuário: …").
 
 ## 6. No fim de cada tarefa
 
 1. Em `ESTADO ATUAL`, no topo da lista: uma linha com data e o que ficou valendo (o que mudou, o que falta, o que não foi conferido). Tire sua linha `EM USO:`.
 2. Pendência concluída sai do `CONTINUAR.md` e vai para o fim do `HISTORICO.md` como `- AAAA-MM-DD: <texto igual>`. Linhas velhas do `ESTADO ATUAL` que já não valem vão do mesmo jeito.
 3. Regra ou decisão nova: no `COMBINADOS.md`, com data (e na memória, só se for regra que vale para outros projetos).
-4. **Medição**: acrescente uma linha em `chat-traffic-uso.csv` (ao lado do `CONTINUAR.md` principal, nunca numa cópia de trabalho; crie com o cabeçalho se faltar):
+4. **Medição**: acrescente uma linha em `chat-traffic-uso.csv` (ao lado do `CONTINUAR.md` principal, nunca numa cópia de trabalho; crie com o cabeçalho se faltar; textos sem vírgula):
    `data,chat,tarefa,onde,modelo,esforco,passos,contexto_inicio,contexto_fim,plano5h_inicio,plano5h_fim`
    `onde` = aqui | subagente | chat-parado | chat-novo. Os números vêm do `get_usage`: o do fim, **sempre**, chamado junto com a gravação do passo 1; o do começo, só se você já o chamou na seção 3 (senão, deixe vazio). Sem `get_usage`, grave a linha mesmo assim, com os números vazios: ela conta a tarefa. Nunca gaste um passo só para medir. Resultado: `scripts/relatorio.py`.
 5. Um commit só com os arquivos que mudaram. Linha `AGUARDA PUBLICAR` esperando por você: passo 3 de `modelos/aguarda-publicar.md`.

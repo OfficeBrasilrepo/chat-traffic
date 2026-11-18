@@ -49,7 +49,7 @@ Um gancho que, ao abrir um chat, confere o `CONTINUAR.md` do projeto: grande dem
 
 ## Medição
 
-No fim de cada tarefa a skill anota uma linha em `chat-traffic-uso.csv` (na raiz do projeto). Para ver se está compensando:
+No fim de cada tarefa a skill anota uma linha em `chat-traffic-uso.csv`, ao lado do `CONTINUAR.md` do projeto. Para ver se está compensando, rode nessa pasta:
 
 ```
 python ~/.claude/skills/chat-traffic/scripts/relatorio.py

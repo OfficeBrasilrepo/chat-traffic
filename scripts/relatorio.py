@@ -1,25 +1,41 @@
-"""Resumo da medição da chat-traffic: lê chat-traffic-uso.csv (raiz do projeto)
+"""Resumo da medição da chat-traffic: lê chat-traffic-uso.csv (ao lado do CONTINUAR.md)
 e mostra, por lugar onde a tarefa foi feita, quantas tarefas, passos médios,
 contexto médio e % do limite de 5 h gasto por tarefa.
 Uso: python relatorio.py [caminho.csv]   Teste: python relatorio.py --teste"""
 import csv, os, sys, tempfile
 from collections import defaultdict
 
+ONDES = {"aqui", "subagente", "chat-parado", "chat-novo"}
 COLUNAS = "data,chat,tarefa,onde,modelo,esforco,passos,contexto_inicio,contexto_fim,plano5h_inicio,plano5h_fim"
+
+
+def numero(v):
+    try:
+        return float(v) if v and v.strip() else None
+    except ValueError:
+        return None
 
 
 def resumo(caminho):
     grupos = defaultdict(list)
-    with open(caminho, encoding="utf-8") as f:
+    puladas = 0
+    with open(caminho, encoding="utf-8-sig") as f:
         for r in csv.DictReader(f):
+            # vírgula solta num texto empurra as colunas: a linha não entra na conta
+            if None in r or None in r.values() or r["onde"] not in ONDES:
+                puladas += 1
+                continue
             grupos[r["onde"]].append(r)
+    if puladas:
+        print(f"{puladas} linha(s) com colunas fora do lugar (vírgula num texto?) ficaram de fora.")
     linhas = []
     for onde, rs in sorted(grupos.items()):
-        num = lambda c: [float(r[c]) for r in rs if r.get(c, "").strip()]
+        num = lambda c: [x for x in (numero(r[c]) for r in rs) if x is not None]
         media = lambda v: sum(v) / len(v) if v else 0
-        ctx = [(float(r["contexto_inicio"]) + float(r["contexto_fim"])) / 2 for r in rs if r["contexto_inicio"] and r["contexto_fim"]]
-        gasto = [float(r["plano5h_fim"]) - float(r["plano5h_inicio"]) for r in rs if r["plano5h_inicio"] and r["plano5h_fim"]]
-        linhas.append((onde, len(rs), media(num("passos")), media(ctx), media(gasto)))
+        # contexto do fim: é o que a skill grava sempre (o do começo quase nunca)
+        gasto = [numero(r["plano5h_fim"]) - numero(r["plano5h_inicio"]) for r in rs
+                 if numero(r["plano5h_inicio"]) is not None and numero(r["plano5h_fim"]) is not None]
+        linhas.append((onde, len(rs), media(num("passos")), media(num("contexto_fim")), media(gasto)))
     return linhas
 
 
@@ -36,10 +52,11 @@ def teste():
         "2026-11-16,a,t1,aqui,opus,medio,4,200000,220000,10,12\n"
         "2026-11-16,b,t2,chat-novo,sonnet,baixo,20,65000,165000,12,20\n"
         "2026-11-16,c,t3,aqui,opus,medio,6,100000,120000,20,21\n"
-        "2026-11-16,d,t4,aqui,sonnet,baixo,,,,,\n")
+        "2026-11-16,d,t4,aqui,sonnet,baixo,,,,,\n"
+        "2026-11-16,e,ajuste de cor, botão,aqui,opus,medio,3,,,,\n")
     l = dict((x[0], x) for x in resumo(p))
     assert l["aqui"][1] == 3 and l["aqui"][2] == 5 and l["aqui"][4] == 1.5, l
-    assert l["chat-novo"][3] == 115000, l
+    assert l["chat-novo"][3] == 165000 and l["aqui"][3] == 170000, l  # a linha com vírgula ficou de fora
     print("ok")
 
 

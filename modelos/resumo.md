@@ -6,5 +6,7 @@ Passos: <1, 2, 3... o bastante para não precisar decidir nada de desenho>.
 Como testar: <comando ou o que abrir>.
 Pronto quando: <resultado que dá para conferir: teste passando, tela, arquivo>.
 Não mexer: <arquivos reservados por outro chat, produção, etc.>.
-Dúvida no pedido: pare e pergunte a <chat que pediu> (SendMessage); não adivinhe.
-Ao terminar: grave no `CONTINUAR.md`, faça commit só dos seus arquivos, publique só se o pedido mandar (senão, quem pediu revisa e publica) e responda em até 10 linhas: o que fez, commit, o que não conferiu.
+Dúvida no pedido: não adivinhe. Chat: pergunte a <chat que pediu> por SendMessage. Subagente: pare e devolva a dúvida na resposta.
+Ao terminar (chat): grave no `CONTINUAR.md`, faça commit só dos seus arquivos, publique só se o pedido mandar (senão, quem pediu revisa e publica).
+Ao terminar (subagente): não mexa no `CONTINUAR.md` nem faça commit (quem pediu faz o fim de tarefa).
+Resposta em até 10 linhas: o que fez, commit (se houver), o que não conferiu.

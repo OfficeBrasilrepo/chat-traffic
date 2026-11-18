@@ -27,7 +27,7 @@ def conferir(pasta, agora=None):
     caminho = achar(pasta)
     if not caminho:
         return []
-    texto = open(caminho, encoding="utf-8", errors="replace").read()
+    texto = open(caminho, encoding="utf-8-sig", errors="replace").read()  # -sig: Bloco de Notas grava BOM
     avisos = []
     if len(texto) > LIMITE:
         avisos.append(f"CONTINUAR.md tem {len(texto)} caracteres (limite ~{LIMITE}): limpar antes de trabalhar (seção 2).")
@@ -43,6 +43,8 @@ def conferir(pasta, agora=None):
             avisos.append(f"Publicação esperando: {l}")
         elif "esperando o usuário" in l.lower():
             avisos.append(f"Resposta pendente do usuário: {l}")
+        elif l.startswith("#") and re.search(r"pendente com\b|esperando", l.lower()):  # \b: "comigo" não conta
+            avisos.append(f"Pendências do usuário na seção: {l.lstrip('# ')}")
     return avisos
 
 
@@ -65,6 +67,9 @@ def teste():
     assert conferir(raiz, agora) == []  # não varre subpastas sozinho
     open(os.path.join(raiz, "CLAUDE.md"), "w", encoding="utf-8").write("Leia `sub/CONTINUAR.md`.\n")
     assert len(conferir(raiz, agora)) == 1  # segue o CLAUDE.md
+    open(p, "w", encoding="utf-8-sig").write("Versão: 3\n## PENDENTE COM O MATHEUS\n1. ver tela\n## PENDENTE COMIGO\n1. x\n")
+    av = conferir(d, agora)
+    assert len(av) == 1 and "PENDENTE COM" in av[0], av  # BOM não esconde a Versão; seção própria conta
     print("ok")
 
 
