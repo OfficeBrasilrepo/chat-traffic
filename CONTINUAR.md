@@ -1,4 +1,4 @@
-Versão: 8
+Versão: 9
 
 # Continuar — chat-traffic
 
@@ -6,6 +6,7 @@ Versão: 8
 (nenhum)
 
 ## ESTADO ATUAL
+- 2026-11-18: modelos: Opus planeja (pedido fechado no resumo.md), Sonnet esforço médio executa (subagente ou chat novo), Opus revisa o diff e publica; Opus faz sozinho desenho, dinheiro, produção, bug difícil. Pesquisado: opusplan/trocar modelo no meio regrava o chat inteiro no cache (cada modelo tem cache próprio), então sai mais caro que delegar a Sonnet em contexto pequeno; advisor exige o chat principal em Sonnet. Medição: get_usage sempre no passo do commit (das 12 linhas dos boletos, só 2 tinham números). "Aqui" unificado em <150 mil. Ensaio Sonnet com 5 casos dos boletos: decisões certas.
 - 2026-11-17: uso real nos boletos (dois PCs): chats renomeados, chat novo na pasta do projeto (Opus médio, certo para código), subagente usado, 4 medições gravadas. Falhas corrigidas: chat novo ficava fora do grupo (pendurado no pai sem grupo) → o chat entra no grupo antes de abrir outro; medição copiada em 3 pastas (cópias de trabalho) → só ao lado do CONTINUAR.md principal. Chats dos boletos movidos para o grupo. Quase todas as medições sem números de contexto: olhar no relatório de 23/11.
 - 2026-11-16: teste real (tarefa comum sem citar a skill): a IA seguiu a skill sozinha. Medição: sem `get_usage` agora grava a linha com números vazios (conta a tarefa); `relatorio.py` testado com linha vazia. Chats abertos antes das 17h10 não usam a skill até `/chat-traffic`. Não testado: chat aberto na pasta pessoal só com a linha global (próximo chat dos boletos mostra).
 - 2026-11-16: nos boletos a skill não rodava: chats abertos na pasta pessoal (C:/Users/OFFICE01) não leem o CLAUDE.md do projeto. Correção: linha da skill no `~/.claude/CLAUDE.md` global (lido em todo chat, qualquer pasta, volta depois de compactar). Instalada neste PC; README manda pôr na instalação; a skill acrescenta sozinha no primeiro uso (seção 1, passo 3). Projeto com arquivos de mesmo papel (TODO, NOTAS, AGENTS.md...): junta num só e o antigo só aponta (seção 2, passo 3). Outro PC: `git pull` + a linha.

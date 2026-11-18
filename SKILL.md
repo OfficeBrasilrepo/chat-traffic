@@ -45,18 +45,18 @@ Antes de tudo: tarefa que cabe numa conversa só (um script, um ajuste de poucos
 
 Veja o tamanho deste chat com `get_usage` (ferramenta do app; carregue se estiver adiada) quando a tarefa for longa: `tokensUsed` decide o custo (limites em mil abaixo), `percentUsed` o risco de compactar. Sem essa ferramenta (fora do app), estime pelo tamanho da conversa e fique aqui na dúvida. Escolha a primeira opção que serve:
 
-1. **Aqui**: tarefa curta (até ~12 passos) ou este chat com menos de ~120 mil de contexto.
-2. **Subagente** (ferramenta Agent, com `model`): pedaço desta tarefa cujo resultado você precisa já (ler muitos arquivos, buscar, revisar, testar). Sonnet/Haiku para leitura e busca; o mesmo modelo deste chat para revisão. Não serve para trabalho que deve durar além deste turno, que o usuário quer acompanhar ou que publica.
+1. **Aqui**: tarefa curta (até ~12 passos) ou este chat com menos de ~150 mil de contexto.
+2. **Subagente** (ferramenta Agent, com `model`): pedaço desta tarefa cujo resultado você precisa já (ler muitos arquivos, buscar, revisar, testar). Sonnet para ler, buscar e executar pedido fechado; o mesmo modelo deste chat para revisar. Não serve para trabalho que deve durar além deste turno, que o usuário quer acompanhar ou que publica.
 3. **Chat parado do mesmo assunto** (`list_sessions`, ocioso): `SendMessage` com resumo curto. Barato **só se** ele parou há menos de 1 hora **ou** tem menos de ~100 mil de contexto. Nunca para chat ocupado.
 4. **Chat novo** (`start_session`, `cwd` na raiz, `title` `<projeto> · <tarefa>`). Antes, `list_sessions` do grupo: já existe chat (ou cartão que você propôs) com essa função? Use-o ou espere; nunca proponha outro. Este chat fora do grupo? Entre nele antes (seção 2, passo 2): o chat novo fica pendurado neste e só entra junto. Serve para: tarefa longa (~12 passos ou mais) saindo de chat acima de ~150 mil; ou trabalho que é uma entrega própria (branch, PR, publicação); ou depois de uma pausa longa num chat grande. Escolha modelo **e** esforço (`effort`):
-   - Sonnet, esforço baixo/médio: mecânica, leitura, relatório, ajuste repetitivo.
-   - Opus, esforço médio: código comum do projeto.
-   - Opus, esforço alto: desenho, dinheiro, produção, código difícil, bug que não se acha.
+   - **Opus planeja, Sonnet executa** (Sonnet custa metade): Opus escreve o pedido fechado (`modelos/resumo.md`: arquivos, passos, como testar, pronto quando); Sonnet, esforço médio, executa como subagente ou chat novo e pergunta se o pedido tiver dúvida; Opus revisa o diff e publica.
+   - Opus faz ele mesmo, aqui ou em chat novo Opus (alto se difícil): desenho, dinheiro, produção, bug que não se acha, ou o que não dá para fechar em pedido.
+   - Não troque o modelo de um chat no meio, nem com `opusplan`: cada troca regrava o chat inteiro no cache.
    - Nunca acima do modelo deste chat sem o usuário pedir.
 
 Para subagente, chat parado ou chat novo, escreva o pedido pelo `modelos/resumo.md` (curto: o que fazer, arquivos, pronto quando, o que não mexer). Na dúvida entre duas opções, fique com a de menos passagens: cada passagem perde detalhe.
 
-**Cache (o que decide a conta).** Reler o que está no cache custa 10%; gravar no cache custa ~200% (no app o cache dura 1 hora). Cada passo relê o chat inteiro: num chat de 280 mil, ~28 mil por passo. Chat novo: ~65 mil gravados (~130 mil) + ~3 passos do chat grande para passar a tarefa e receber o aviso.
+**Cache (o que decide a conta).** Reler o que está no cache custa 10%; gravar no cache custa ~200% (no app o cache dura 1 hora). Cada passo relê o chat inteiro: num chat de 280 mil, ~28 mil por passo.
 - **Chat parado há mais de 1 hora perdeu o cache**: acordá-lo regrava tudo a ~200%. Depois de pausa longa, chat grande com tarefa nova → chat novo.
 - Não passe a **publicação** para outro chat: ele redescobre tudo e corre risco.
 
@@ -74,13 +74,13 @@ EM USO: <outro chat> · <outros arquivos> · desde <...>
 
 - **Ao ler**, guarde o número da versão.
 - **Ao gravar** (inclusive a própria reserva), use a ferramenta Edit, não o shell: ela recusa se o arquivo mudou desde a sua leitura, sem passo extra. Recusou ou a `Versão:` mudou? Releia o topo, junte sua mudança com a nova e grave. Toda gravação depois da criação soma 1 na versão.
-- **Reserva**: antes de mexer em arquivos, acrescente sua linha `EM USO:` na seção `## EM USO` (uma linha por chat; a hora vem de `date '+%Y-%m-%d %H:%M'`; sem nenhuma reserva, escreva `(nenhum)`). Se outra linha já reserva os mesmos arquivos, não mexa: trabalhe em outra coisa ou pergunte. Linha com mais de 24 h vale como abandonada: **pergunte com botões** antes de assumir. Com o OK, troque a linha dela pela sua; sem OK, faça outra coisa.
+- **Reserva**: antes de mexer em arquivos, acrescente sua linha `EM USO:` na seção `## EM USO` (uma linha por chat; sem nenhuma reserva, escreva `(nenhum)`). Se outra linha já reserva os mesmos arquivos, não mexa: trabalhe em outra coisa ou pergunte. Linha com mais de 24 h vale como abandonada: **pergunte com botões** antes de assumir. Com o OK, troque a linha dela pela sua; sem OK, faça outra coisa.
 - Cada chat só altera **a própria** linha `EM USO:`.
 - **Commit a cada gravação** do `CONTINUAR.md` (só os arquivos que você mudou; nunca `git add -A` com outros chats na pasta).
 
 ## 5. Publicar
 
-Cada chat publica o próprio trabalho, seguindo o `COMBINADOS.md` (inclusive pedir OK, se a regra pedir). Sem regra de publicação no `COMBINADOS.md` (ou "perguntar ao dono"): não publique; pergunte com botões e grave a resposta lá como decisão, para não perguntar de novo. Dois chats no mesmo arquivo: um depois do outro (a reserva diz quem vai primeiro).
+Cada chat publica o próprio trabalho, seguindo o `COMBINADOS.md` (inclusive pedir OK, se a regra pedir). Sem regra de publicação no `COMBINADOS.md` (ou "perguntar ao dono"): não publique; pergunte com botões e grave a resposta lá como decisão, para não perguntar de novo.
 
 **Nada fica sem publicar porque outro chat está em andamento.** Se você terminou e não pode publicar ainda (outro chat reservou o mesmo arquivo ou vai publicar antes):
 1. Escreva no `CONTINUAR.md`, seção `## EM USO`: `AGUARDA PUBLICAR: <seu chat> · <o quê, branch/commit> · depois de <outro chat>`.
@@ -91,7 +91,7 @@ Cada chat publica o próprio trabalho, seguindo o `COMBINADOS.md` (inclusive ped
 ## Resposta pendente do usuário (nunca fica escondida)
 
 - Toda vez que o próximo passo depende do usuário (OK para publicar, escolha, aprovação), termine o turno com `wrap_up` com pergunta + botões **e `blocked: true`**, para o app marcar o chat como "esperando você" e mostrar o aviso.
-- Ao começar e ao terminar uma tarefa, veja `list_sessions` (`linked: true`): se algum chat do projeto está esperando resposta do usuário, avise no seu quadro de próximo passo qual é (com link `[título](#local_<id>)`).
+- Ao começar e ao terminar uma tarefa, veja `list_sessions` (`linked: true`): se algum chat do projeto está esperando resposta do usuário, avise no seu quadro de próximo passo qual é.
 - Pendência do usuário também vai escrita no `CONTINUAR.md` (`## PENDÊNCIAS`, "esperando o usuário: …"), para não depender da memória de nenhum chat.
 
 ## 6. No fim de cada tarefa
@@ -101,7 +101,7 @@ Cada chat publica o próprio trabalho, seguindo o `COMBINADOS.md` (inclusive ped
 3. Regra ou decisão nova: no `COMBINADOS.md`, com data (e na memória, só se for regra que vale para outros projetos).
 4. **Medição**: acrescente uma linha em `chat-traffic-uso.csv` (ao lado do `CONTINUAR.md` principal, nunca numa cópia de trabalho; crie com o cabeçalho se faltar):
    `data,chat,tarefa,onde,modelo,esforco,passos,contexto_inicio,contexto_fim,plano5h_inicio,plano5h_fim`
-   `onde` = aqui | subagente | chat-parado | chat-novo. Os números vêm do `get_usage`: o do fim, chamado **no mesmo passo** de outra ferramenta; o do começo, só se você já o chamou na seção 3 (senão, deixe vazio). Sem `get_usage`, grave a linha mesmo assim, com os números vazios: ela conta a tarefa. Nunca gaste um passo só para medir. Resultado: `scripts/relatorio.py`.
+   `onde` = aqui | subagente | chat-parado | chat-novo. Os números vêm do `get_usage`: o do fim, **sempre**, chamado no mesmo passo do commit (passo 5); o do começo, só se você já o chamou na seção 3 (senão, deixe vazio). Sem `get_usage`, grave a linha mesmo assim, com os números vazios: ela conta a tarefa. Nunca gaste um passo só para medir. Resultado: `scripts/relatorio.py`.
 5. Um commit só com os arquivos que mudaram.
 6. **Chat que não é mais necessário** — vale qualquer um: (a) este, com a tarefa terminada e o `percentUsed` do `get_usage` do passo 4 acima de ~60% (sem a ferramenta: conversa muito longa); (b) este, sem trabalho previsto, de qualquer tamanho; (c) um chat aberto por este que já acabou. Antes, grave tudo no `CONTINUAR.md`. **Se nenhum outro chat aberto é do projeto** (`list_sessions` com `group` = projeto, que não lista este chat; sem grupo, títulos `<projeto> · …`; na dúvida, trate como único), proponha primeiro o sucessor com `start_session` (`own_initiative`, `cwd` na raiz, `title` `<projeto> · principal`, modelo e esforço do trabalho comum do projeto, resumo: "Leia CLAUDE.md e o topo do CONTINUAR.md; continue o projeto"). O quadro de próximo passo traz uma pergunta só: arquivar. Use a ação `archive` do `wrap_up` se houver; senão, botões ("Pode arquivar" / "Ainda não") e diga que se arquiva pelo menu do chat.
 
