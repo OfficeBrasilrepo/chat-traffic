@@ -31,7 +31,7 @@ Antes de tudo: tarefa que cabe numa conversa só (um script, um ajuste de poucos
    - Como publicar (não publica, branch principal, comando, manual pelo dono).
 2. Crie os 4 arquivos a partir dos modelos, preenchendo `COMBINADOS.md` com as respostas (decisões com a data de hoje), e copie `modelos/.gitattributes` (só em projeto novo). Sem git: `git init`; sem `git config user.name`, botões com o nome que você já sabe e "Outro" (aí peça para digitar na caixa de mensagem do chat); grave na pasta `user.name` e, se faltar, `user.email` (o da conta, ou `<nome>@local`). Primeiro commit.
 3. Sem `chat-traffic` em `~/.claude/CLAUDE.md`: acrescente no fim, sem perguntar, a linha do `README.md` ("Em projeto com `CONTINUAR.md`...") e avise em uma frase.
-4. Ofereça uma vez (botões) instalar o **alarme** se `~/.claude/settings.json` não existe ou não cita `chat-traffic/scripts/alarme.py` (instrução no `README.md` da skill).
+4. Ofereça uma vez (botões) ligar `auto_archive_on_pr_close` (`set_setting`: chat se arquiva quando o PR dele é juntado) e instalar o **alarme** se `~/.claude/settings.json` não existe ou não cita `chat-traffic/scripts/alarme.py` (instrução no `README.md` da skill).
 
 ## 2. Projeto existente
 
@@ -82,11 +82,7 @@ EM USO: <outro chat> · <outros arquivos> · desde <...>
 
 Cada chat publica o próprio trabalho, seguindo o `COMBINADOS.md` (inclusive pedir OK, se a regra pedir). Sem regra de publicação no `COMBINADOS.md` (ou "perguntar ao dono"): não publique; pergunte com botões e grave a resposta lá como decisão, para não perguntar de novo.
 
-**Nada fica sem publicar porque outro chat está em andamento.** Se você terminou e não pode publicar ainda (outro chat reservou o mesmo arquivo ou vai publicar antes):
-1. Escreva no `CONTINUAR.md`, seção `## EM USO`: `AGUARDA PUBLICAR: <seu chat> · <o quê, branch/commit> · depois de <outro chat>`.
-2. Mande `SendMessage` ao outro chat: "quando publicar, me avise" (ou, se ele já terminou, publique você os dois, em ordem).
-3. O chat que libera o arquivo, ao terminar, lê as linhas `AGUARDA PUBLICAR` e avisa cada um (SendMessage) ou publica por eles.
-4. Sem como avisar (chat arquivado, fora do PC): pergunte ao usuário com botões quem publica.
+**Nada fica sem publicar porque outro chat está em andamento.** Terminou e não pode publicar ainda (outro chat reservou o arquivo ou publica antes)? Siga `modelos/aguarda-publicar.md`.
 
 ## Resposta pendente do usuário (nunca fica escondida)
 
@@ -102,7 +98,7 @@ Cada chat publica o próprio trabalho, seguindo o `COMBINADOS.md` (inclusive ped
 4. **Medição**: acrescente uma linha em `chat-traffic-uso.csv` (ao lado do `CONTINUAR.md` principal, nunca numa cópia de trabalho; crie com o cabeçalho se faltar):
    `data,chat,tarefa,onde,modelo,esforco,passos,contexto_inicio,contexto_fim,plano5h_inicio,plano5h_fim`
    `onde` = aqui | subagente | chat-parado | chat-novo. Os números vêm do `get_usage`: o do fim, **sempre**, chamado no mesmo passo do commit (passo 5); o do começo, só se você já o chamou na seção 3 (senão, deixe vazio). Sem `get_usage`, grave a linha mesmo assim, com os números vazios: ela conta a tarefa. Nunca gaste um passo só para medir. Resultado: `scripts/relatorio.py`.
-5. Um commit só com os arquivos que mudaram.
-6. **Chat que não é mais necessário** — vale qualquer um: (a) este, com a tarefa terminada e o `percentUsed` do `get_usage` do passo 4 acima de ~60% (sem a ferramenta: conversa muito longa); (b) este, sem trabalho previsto, de qualquer tamanho; (c) um chat aberto por este que já acabou. Antes, grave tudo no `CONTINUAR.md`. **Se nenhum outro chat aberto é do projeto** (`list_sessions` com `group` = projeto, que não lista este chat; sem grupo, títulos `<projeto> · …`; na dúvida, trate como único), proponha primeiro o sucessor com `start_session` (`own_initiative`, `cwd` na raiz, `title` `<projeto> · principal`, modelo e esforço do trabalho comum do projeto, resumo: "Leia CLAUDE.md e o topo do CONTINUAR.md; continue o projeto"). O quadro de próximo passo traz uma pergunta só: arquivar. Use a ação `archive` do `wrap_up` se houver; senão, botões ("Pode arquivar" / "Ainda não") e diga que se arquiva pelo menu do chat.
+5. Um commit só com os arquivos que mudaram. Linha `AGUARDA PUBLICAR` esperando por você: passo 3 de `modelos/aguarda-publicar.md`.
+6. **Chat que não é mais necessário** — vale qualquer um: (a) este, com a tarefa terminada e o `percentUsed` do `get_usage` do passo 4 acima de ~60% (sem a ferramenta: conversa muito longa); (b) este, sem trabalho previsto, de qualquer tamanho; (c) um chat aberto por este que já acabou; (d) chats do grupo parados há mais de 1 dia: ofereça arquivar todos num botão só, depois de passar ao `CONTINUAR.md` o que só existia na conversa deles (`list_events`; decisão esperada vira pendência), e aí arquivar não esconde nada. Antes, grave tudo no `CONTINUAR.md`. **Se nenhum outro chat aberto é do projeto** (`list_sessions` com `group` = projeto, que não lista este chat; sem grupo, títulos `<projeto> · …`; na dúvida, trate como único), proponha primeiro o sucessor com `start_session` (`own_initiative`, `cwd` na raiz, `title` `<projeto> · principal`, modelo e esforço do trabalho comum do projeto, resumo: "Leia CLAUDE.md e o topo do CONTINUAR.md; continue o projeto"). O quadro de próximo passo traz uma pergunta só: arquivar. Use a ação `archive` do `wrap_up` se houver; senão, botões ("Pode arquivar" / "Ainda não") e diga que se arquiva pelo menu do chat.
 
 Trabalho interrompido no meio vira pendência escrita no `CONTINUAR.md` na hora.

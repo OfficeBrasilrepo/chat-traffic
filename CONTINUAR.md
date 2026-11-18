@@ -1,4 +1,4 @@
-Versão: 9
+Versão: 10
 
 # Continuar — chat-traffic
 
@@ -6,6 +6,7 @@ Versão: 9
 (nenhum)
 
 ## ESTADO ATUAL
+- 2026-11-18: muitos chats abertos nos boletos (8). Regra nova: chats do grupo parados há mais de 1 dia → oferecer arquivar em lote, depois de passar ao CONTINUAR.md o que só existia na conversa (o btw tinha uma publicação esperando decisão só na conversa). Primeiro uso oferece ligar `auto_archive_on_pr_close`. Publicação parada foi para `modelos/aguarda-publicar.md` (SKILL.md voltou a ~12,2 mil). O app não arquiva por ferramenta chat com controle remoto ligado: o usuário arquiva pela barra lateral.
 - 2026-11-18: modelos: Opus planeja (pedido fechado no resumo.md), Sonnet esforço médio executa (subagente ou chat novo), Opus revisa o diff e publica; Opus faz sozinho desenho, dinheiro, produção, bug difícil. Pesquisado: opusplan/trocar modelo no meio regrava o chat inteiro no cache (cada modelo tem cache próprio), então sai mais caro que delegar a Sonnet em contexto pequeno; advisor exige o chat principal em Sonnet. Medição: get_usage sempre no passo do commit (das 12 linhas dos boletos, só 2 tinham números). "Aqui" unificado em <150 mil. Ensaio Sonnet com 5 casos dos boletos: decisões certas.
 - 2026-11-17: uso real nos boletos (dois PCs): chats renomeados, chat novo na pasta do projeto (Opus médio, certo para código), subagente usado, 4 medições gravadas. Falhas corrigidas: chat novo ficava fora do grupo (pendurado no pai sem grupo) → o chat entra no grupo antes de abrir outro; medição copiada em 3 pastas (cópias de trabalho) → só ao lado do CONTINUAR.md principal. Chats dos boletos movidos para o grupo. Quase todas as medições sem números de contexto: olhar no relatório de 23/11.
 - 2026-11-16: teste real (tarefa comum sem citar a skill): a IA seguiu a skill sozinha. Medição: sem `get_usage` agora grava a linha com números vazios (conta a tarefa); `relatorio.py` testado com linha vazia. Chats abertos antes das 17h10 não usam a skill até `/chat-traffic`. Não testado: chat aberto na pasta pessoal só com a linha global (próximo chat dos boletos mostra).
