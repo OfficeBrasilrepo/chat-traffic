@@ -1,4 +1,4 @@
-Versão: 19
+Versão: 20
 
 # Continuar — chat-traffic
 
@@ -6,6 +6,7 @@ Versão: 19
 (nenhum)
 
 ## ESTADO ATUAL
+- 2026-11-23: **v2 começou.** v1 marcada no git (`git tag v1`) e medida em `DESEMPENHO.md` (linha de base dos boletos: 19 tarefas, todas Opus, chats de 161 mil "aqui" e 319 mil "chat novo"). v2: modelo e esforço pela tarefa para quem faz (aqui, subagente, chat novo): Opus (desenho, dinheiro, produção, bug difícil), Sonnet médio (código comum, ler, buscar), Haiku baixo (só mecânico); chat Opus com pedaço barato manda a subagente; chat que precisa de modelo acima pede ao usuário; o recap do fim de tarefa diz com que modelo fazer a próxima. Saiu "Opus planeja, Sonnet executa" e "chat Sonnet não abre chat". `relatorio.py --desde AAAA-MM-DD` e contagem por modelo. SKILL.md 12,1 mil. Ensaio Sonnet: achou que "Aqui" ignorava o modelo (corrigido). Chats já abertos só pegam a v2 com `/chat-traffic` ou ao compactar.
 - 2026-11-23: buraco corrigido: chat Sonnet não abre chat Opus (a ferramenta ignora modelo acima do próprio), e um Opus se arquivava sem sucessor só porque havia um Sonnet aberto. Agora, ao arquivar, conta só outro `<projeto> · principal` aberto: há → arquiva; não há e é Opus → propõe sucessor (herda Opus); não há e é Sonnet → não arquiva, pede ao usuário chat novo em Opus + `/chat-traffic` (saída de emergência também no README). Linha global trocada (README e ~/.claude/CLAUDE.md deste PC; outro PC: `git pull` e a skill troca sozinha). Limpeza foi para `modelos/limpeza.md`: SKILL.md 12,0 mil (no teto). Testes ok; ensaio Sonnet acertou A/B/D/E e achou o "Senão" ambíguo no caso com principal aberto (corrigido, não re-ensaiado). Não testado no uso real.
 - 2026-11-23: medição de 1 semana (boletos, 17 tarefas): todas Opus, chats com 175 mil (aqui) e 319 mil (chat novo) em média; "principal" a 379 mil; CONTINUAR.md dos boletos 19,6 mil e COMBINADOS.md 18,6 mil. O gasto vem do tamanho dos chats somado à arrumação passo a passo. Correções: acima de ~200 mil nenhuma tarefa nova no chat (nem no principal); fim de tarefa numa só mensagem; COMBINADOS até ~8 mil (limpar.py --arquivo COMBINADOS.md --versao 0); código comum com padrão existente vai sempre para Sonnet; chat Sonnet não abre chat nem delega e o principal é sempre Opus. SKILL.md 12,5 mil (pouco acima do teto). Próxima medição: comparar a semana de 23 a 30/11 com esta.
 - 2026-11-18: /code-review da skill inteira, 10 achados corrigidos: relatório usa o contexto do fim (antes mostrava 0k) e pula linha com vírgula em vez de quebrar; .gitattributes deixa .bat/.cmd/.ps1 em CRLF; resumo.md separa chat e subagente (subagente devolve dúvida e não mexe no CONTINUAR nem comita); abrir chat não repete checagens de instalação (linha global já em contexto; oferta registrada no COMBINADOS); alarme e limpar aceitam BOM; alarme reconhece seção "PENDENTE COM …"/"ESPERANDO"; README: CSV ao lado do CONTINUAR; limpeza lê o arquivo inteiro com números. Relatório real dos boletos agora mostra contexto (aqui 136k, chat novo 319k).
@@ -26,4 +27,4 @@ Versão: 19
 - 2026-11-16 conferido no uso real: cartão do sucessor funcionou (chat antigo arquivado, sucessor ficou vivo e no grupo). Agrupamento funciona, mas chat aberto por outro chat fica aninhado e só se move junto com o pai (regra corrigida). Nome do git: neste PC já está configurado, a regra não dispara; corrigida para não pedir nome digitado em botão.
 
 ## PENDÊNCIAS
-1. Em 30/11/2026: rodar o `relatorio.py` nos boletos e comparar com a semana de 16 a 23/11 (aqui 175 mil, chat novo 319 mil, 0 tarefas em Sonnet). Se não melhorou, rever as regras de custo.
+1. Em 30/11/2026: nos boletos, `python ~/.claude/skills/chat-traffic/scripts/relatorio.py --desde 2026-11-24`, preencher a tabela da v2 no `DESEMPENHO.md` e decidir pela regra escrita lá (manter v2 ou cortar ao essencial).

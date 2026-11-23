@@ -1,9 +1,9 @@
 """Resumo da medição da chat-traffic: lê chat-traffic-uso.csv (ao lado do CONTINUAR.md)
 e mostra, por lugar onde a tarefa foi feita, quantas tarefas, passos médios,
 contexto médio e % do limite de 5 h gasto por tarefa.
-Uso: python relatorio.py [caminho.csv]   Teste: python relatorio.py --teste"""
+Uso: python relatorio.py [caminho.csv] [--desde AAAA-MM-DD]   Teste: python relatorio.py --teste"""
 import csv, os, sys, tempfile
-from collections import defaultdict
+from collections import Counter, defaultdict
 
 ONDES = {"aqui", "subagente", "chat-parado", "chat-novo"}
 COLUNAS = "data,chat,tarefa,onde,modelo,esforco,passos,contexto_inicio,contexto_fim,plano5h_inicio,plano5h_fim"
@@ -16,7 +16,7 @@ def numero(v):
         return None
 
 
-def resumo(caminho):
+def resumo(caminho, desde=""):
     grupos = defaultdict(list)
     puladas = 0
     with open(caminho, encoding="utf-8-sig") as f:
@@ -25,9 +25,12 @@ def resumo(caminho):
             if None in r or None in r.values() or r["onde"] not in ONDES:
                 puladas += 1
                 continue
-            grupos[r["onde"]].append(r)
+            if r["data"] >= desde:  # datas AAAA-MM-DD comparam como texto
+                grupos[r["onde"]].append(r)
     if puladas:
         print(f"{puladas} linha(s) com colunas fora do lugar (vírgula num texto?) ficaram de fora.")
+    mod = Counter(r["modelo"].split("-")[0].strip().lower() or "?" for rs in grupos.values() for r in rs)
+    print("modelos: " + ", ".join(f"{m} {n}" for m, n in mod.most_common()))
     linhas = []
     for onde, rs in sorted(grupos.items()):
         num = lambda c: [x for x in (numero(r[c]) for r in rs) if x is not None]
@@ -57,6 +60,8 @@ def teste():
     l = dict((x[0], x) for x in resumo(p))
     assert l["aqui"][1] == 3 and l["aqui"][2] == 5 and l["aqui"][4] == 1.5, l
     assert l["chat-novo"][3] == 165000 and l["aqui"][3] == 170000, l  # a linha com vírgula ficou de fora
+    open(p, "a", encoding="utf-8").write("2026-11-24,f,t5,aqui,haiku,baixo,2,,,,\n")
+    assert dict((x[0], x) for x in resumo(p, "2026-11-24"))["aqui"][1] == 1
     print("ok")
 
 
@@ -65,7 +70,9 @@ if __name__ == "__main__":
     if "--teste" in sys.argv:
         teste()
     else:
-        arq = sys.argv[1] if len(sys.argv) > 1 else "chat-traffic-uso.csv"
+        livres = [a for i, a in enumerate(sys.argv[1:], 1) if a != "--desde" and sys.argv[i - 1] != "--desde"]
+        arq = livres[0] if livres else "chat-traffic-uso.csv"
         if not os.path.isfile(arq):
             sys.exit(f"Sem {arq} nesta pasta: rode na raiz de um projeto que já mediu tarefas.")
-        mostrar(resumo(arq))
+        desde = sys.argv[sys.argv.index("--desde") + 1] if "--desde" in sys.argv else ""
+        mostrar(resumo(arq, desde))

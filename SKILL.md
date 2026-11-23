@@ -1,6 +1,6 @@
 ---
 name: chat-traffic
-description: Organiza um projeto entre vários chats do app Claude (aba Code) gastando poucos tokens - CLAUDE.md, CONTINUAR.md, COMBINADOS.md e HISTORICO.md, onde fazer cada tarefa, sem conflito entre chats. Use ao começar ou retomar um projeto, ao perguntar "onde paramos", ao decidir se abre chat novo ou delega (Opus planeja, Sonnet executa), ao arquivar chats, e ao terminar uma tarefa num projeto que tem CONTINUAR.md.
+description: Organiza um projeto entre vários chats do app Claude (aba Code) gastando poucos tokens - CLAUDE.md, CONTINUAR.md, COMBINADOS.md e HISTORICO.md, onde fazer cada tarefa, sem conflito entre chats. Use ao começar ou retomar um projeto, ao perguntar "onde paramos", ao decidir se abre chat novo ou delega e com que modelo, ao arquivar chats, e ao terminar uma tarefa num projeto que tem CONTINUAR.md.
 ---
 
 # chat-traffic (projeto entre chats)
@@ -39,16 +39,16 @@ Antes de tudo: tarefa que cabe numa conversa só (um script, um ajuste de poucos
 
 Tarefa longa: veja `get_usage` (`tokensUsed` decide o custo, em mil abaixo; `percentUsed`, o risco de compactar). Sem ela, estime pela conversa. Escolha a primeira opção que serve:
 
-1. **Aqui**: tarefa curta (até ~12 passos) ou este chat com menos de ~150 mil de contexto. **Acima de ~200 mil, nenhuma tarefa nova aqui**, nem curta e nem no `principal`: grave no `CONTINUAR.md`, abra o chat novo para ela e proponha arquivar este (seção 6).
-2. **Subagente** (ferramenta Agent, com `model`): pedaço desta tarefa cujo resultado você precisa já (ler muitos arquivos, buscar, revisar, testar). Sonnet para ler, buscar e executar pedido fechado; o mesmo modelo deste chat para revisar. Não serve para trabalho que deve durar além deste turno, que o usuário quer acompanhar ou que publica.
+1. **Aqui**: tarefa curta (até ~12 passos) ou este chat com menos de ~150 mil de contexto, se o modelo deste chat serve (abaixo). Chat Opus com pedaço de Sonnet/Haiku: subagente. Chat Sonnet com tarefa de Opus: peça ao usuário. **Acima de ~200 mil, nenhuma tarefa nova aqui**, nem curta e nem no `principal`: grave no `CONTINUAR.md`, abra o chat novo para ela e proponha arquivar este (seção 6).
+2. **Subagente** (ferramenta Agent, com `model`): pedaço desta tarefa cujo resultado você precisa já (ler muitos arquivos, buscar, revisar, testar). Modelo pela regra abaixo; o mesmo deste chat para revisar. Não serve para trabalho que deve durar além deste turno, que o usuário quer acompanhar ou que publica.
 3. **Chat parado do mesmo assunto** (`list_sessions`, ocioso): `SendMessage` com resumo curto. Barato **só se** ele parou há menos de 1 hora **ou** tem menos de ~100 mil de contexto. Nunca para chat ocupado nem arquivado (desarquivar regrava tudo). Pedido que é de outro chat aberto do grupo: mande para ele por esta mesma regra.
 4. **Chat novo** (`start_session`, `cwd` na raiz, `title` `<projeto> · <tarefa>`). Antes, `list_sessions` do grupo: já existe chat (ou cartão que você propôs) com essa função? Use-o ou espere; nunca proponha outro. Este chat fora do grupo? Entre nele antes (seção 2, passo 2): o chat novo fica pendurado neste e só entra junto. Serve para: qualquer tarefa saindo de chat acima de ~200 mil; tarefa longa (~12 passos ou mais) saindo de chat acima de ~150 mil; ou trabalho que é uma entrega própria (branch, PR, publicação); ou depois de uma pausa longa num chat grande.
 
-**Modelo e esforço** (`model`, `effort`) para subagente e chat novo:
-   - **Opus planeja, Sonnet executa** (Sonnet custa metade): código comum com padrão que já existe no projeto vai **sempre** para Sonnet, esforço médio (subagente se cabe no turno; chat novo Sonnet se é entrega própria). Opus escreve o pedido fechado (`modelos/resumo.md`), revisa o diff e publica; o Sonnet pergunta se o pedido tiver dúvida.
-   - Opus faz ele mesmo, aqui ou em chat novo Opus (alto se difícil): desenho, dinheiro, produção, bug que não se acha, ou o que não dá para fechar em pedido.
-   - Não troque o modelo de um chat no meio, nem com `opusplan`: cada troca regrava o chat inteiro no cache.
-   - Chat Sonnet não abre chat nem delega: devolve a quem pediu. Sucessor `principal` é sempre Opus. Fora isso, nunca acima do modelo deste chat sem o usuário pedir.
+**Modelo e esforço** (`model`, `effort`) pela tarefa, para quem faz (aqui, subagente, chat novo):
+   - **Opus** (alto se difícil): desenho, dinheiro, produção, bug que não se acha, o que não dá para fechar em pedido. **Sonnet** (médio, custa metade): código comum com padrão no projeto, ler, buscar, pedido fechado. **Haiku** (baixo): só mecânico (renomear, mover texto, buscar palavra).
+   - `start_session` não aceita modelo acima deste chat. Precisa de mais? Peça ao usuário (botões) que abra chat novo nesse modelo e esforço e diga `/chat-traffic`. Sucessor `principal` é sempre Opus.
+   - No fim da tarefa, o resumo (recap) do quadro de próximo passo diz com que modelo e esforço fazer a próxima.
+   - Não troque o modelo de um chat no meio, nem com `opusplan`: regrava o chat inteiro no cache.
 
 Para subagente, chat parado ou chat novo, escreva o pedido pelo `modelos/resumo.md`. Na dúvida entre duas opções, fique com a de menos passagens: cada passagem perde detalhe.
 
