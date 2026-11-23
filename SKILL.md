@@ -61,7 +61,7 @@ No topo do `CONTINUAR.md` (ver o modelo): `Versão: N` na 1ª linha e, em `## EM
 
 - **Ao ler**, guarde o número da versão.
 - **Ao gravar** (inclusive a própria reserva), use Edit, não o shell: ela recusa se o arquivo mudou desde a sua leitura. Recusou ou a `Versão:` mudou? Releia o topo, junte sua mudança com a nova e grave. Toda gravação depois da criação soma 1 na versão.
-- **Reserva**: antes de mexer em arquivos, acrescente sua linha `EM USO:` na seção `## EM USO` (sem nenhuma, `(nenhum)`). Se outra linha já reserva os mesmos arquivos, não mexa: trabalhe em outra coisa ou pergunte. Linha com mais de 24 h vale como abandonada: **pergunte com botões** antes de assumir. Com o OK, troque a linha dela pela sua; sem OK, faça outra coisa.
+- **Reserva**: antes de mexer em arquivos, acrescente sua linha `EM USO:` na seção `## EM USO` (sem nenhuma, `(nenhum)`). Se outra linha já reserva os mesmos arquivos, não mexa: trabalhe em outra coisa ou pergunte. Linha com mais de 24 h vale como abandonada: **pergunte com botões** antes de assumir. Com o OK, troque-a pela sua.
 - **Commit a cada gravação** do `CONTINUAR.md` (só os arquivos que você mudou; nunca `git add -A` com outros chats na pasta).
 
 ## 5. Publicar
@@ -72,7 +72,8 @@ Cada chat publica o próprio trabalho, seguindo o `COMBINADOS.md`. Sem regra de 
 
 ## Resposta pendente do usuário (nunca fica escondida)
 
-- Próximo passo depende do usuário (OK, escolha, aprovação)? Termine o turno com `wrap_up` com pergunta + botões **e `blocked: true`** (o app marca "esperando você").
+- Próximo passo depende do usuário (OK, escolha, aprovação)? Termine o turno com `wrap_up` com pergunta + botões **e `blocked: true`**.
+- Usuário pulou a pergunta da skill (arquivar, sucessor, chat novo, mudar de chat) e mandou outra coisa? Pulo não é "não": responda o pedido novo e repita a pergunta no quadro de próximo passo, a cada turno, até ele responder. Vale acima da regra do app de não repetir oferta.
 - Ao começar e ao terminar uma tarefa, veja `list_sessions` do grupo do projeto: se algum está esperando resposta do usuário, avise no seu quadro de próximo passo qual é.
 - Pendência do usuário também vai escrita no `CONTINUAR.md` (`## PENDÊNCIAS`, "esperando o usuário: …").
 
@@ -91,7 +92,7 @@ Faça os passos 1 a 5 **numa só mensagem** (Edit do `CONTINUAR.md` e do `HISTOR
 6. **Arquivar chats** (grave tudo no `CONTINUAR.md` antes). Vale qualquer um:
    - (a) este, com a tarefa terminada e o `percentUsed` do `get_usage` do passo 4 acima de ~60% (sem a ferramenta: conversa muito longa); (b) este, sem trabalho previsto; (c) um chat aberto por este que já acabou; (d) chats do grupo parados há mais de 1 dia, todos num botão só, depois de passar ao `CONTINUAR.md` o que só existia na conversa deles (`list_events`; decisão esperada vira pendência).
    - Antes de arquivar este, veja se há **outro `<projeto> · principal` aberto** (`list_sessions` com `group` = projeto, que não lista este; outros chats não contam: podem ser Sonnet; na dúvida, não há). Há: arquive sem sucessor. Não há e este chat é Sonnet: não arquive; peça ao usuário (botões "Abri o chat Opus" / "Ainda não") que abra chat novo em Opus e diga `/chat-traffic`. Não há e este é Opus: proponha o sucessor com `start_session` (`own_initiative`, `cwd` na raiz, `title` `<projeto> · principal`, sem `model`: herda o Opus deste, resumo: "Leia CLAUDE.md e o topo do CONTINUAR.md, mostre ao usuário onde o projeto está (até 8 linhas) e continue"). Iniciado o sucessor, `detach_session` nele antes de arquivar este: senão ele é arquivado junto.
-   - Sugerir arquivar é sempre pergunta com botões, nunca só no texto. O quadro de próximo passo traz uma pergunta só: arquivar. Use a ação `archive` do `wrap_up` se houver; senão, botões ("Pode arquivar" / "Ainda não"). Arquivando outro chat (`archive_session`) e o app recusa por controle remoto: `set_remote_control` desligado e de novo. Arquivar um chat leva junto os chats terminados pendurados nele.
+   - O quadro de próximo passo traz uma pergunta só: arquivar. Use a ação `archive` do `wrap_up` se houver; senão, botões ("Pode arquivar" / "Ainda não"). Arquivando outro chat (`archive_session`) e o app recusa por controle remoto: `set_remote_control` desligado e de novo. Arquivar um chat leva junto os chats terminados pendurados nele.
    - Depois de arquivar outros, mostre ao usuário **onde o projeto está** em até 8 linhas do `CONTINUAR.md`: últimas entregas, o que ele aprovou, o que espera por ele.
 
 Trabalho interrompido no meio vira pendência escrita no `CONTINUAR.md` na hora.
