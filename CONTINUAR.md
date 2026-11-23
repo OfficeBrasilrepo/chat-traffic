@@ -1,4 +1,4 @@
-Versão: 16
+Versão: 17
 
 # Continuar — chat-traffic
 
@@ -6,6 +6,7 @@ Versão: 16
 (nenhum)
 
 ## ESTADO ATUAL
+- 2026-11-23: medição de 1 semana (boletos, 17 tarefas): todas Opus, chats com 175 mil (aqui) e 319 mil (chat novo) em média; "principal" a 379 mil; CONTINUAR.md dos boletos 19,6 mil e COMBINADOS.md 18,6 mil. O gasto vem do tamanho dos chats somado à arrumação passo a passo. Correções: acima de ~200 mil nenhuma tarefa nova no chat (nem no principal); fim de tarefa numa só mensagem; COMBINADOS até ~8 mil (limpar.py --arquivo COMBINADOS.md --versao 0); código comum com padrão existente vai sempre para Sonnet; chat Sonnet não abre chat nem delega e o principal é sempre Opus. SKILL.md 12,5 mil (pouco acima do teto). Próxima medição: comparar a semana de 23 a 30/11 com esta.
 - 2026-11-18: /code-review da skill inteira, 10 achados corrigidos: relatório usa o contexto do fim (antes mostrava 0k) e pula linha com vírgula em vez de quebrar; .gitattributes deixa .bat/.cmd/.ps1 em CRLF; resumo.md separa chat e subagente (subagente devolve dúvida e não mexe no CONTINUAR nem comita); abrir chat não repete checagens de instalação (linha global já em contexto; oferta registrada no COMBINADOS); alarme e limpar aceitam BOM; alarme reconhece seção "PENDENTE COM …"/"ESPERANDO"; README: CSV ao lado do CONTINUAR; limpeza lê o arquivo inteiro com números. Relatório real dos boletos agora mostra contexto (aqui 136k, chat novo 319k).
 - 2026-11-18: uso real: o "consumo real Ricoh", único chat aberto dos boletos e já com a skill relida, sugeriu arquivar a si mesmo só no texto, sem conferir se era o único nem propor sucessor. Correção: a regra do único chat foi para a linha do `~/.claude/CLAUDE.md` (sempre em contexto, inclusive depois de compactar); a skill troca a linha antiga pela nova; sugerir arquivar é sempre com botões.
 - 2026-11-18: revisão geral: descrição cita delegar e arquivar (gatilho); "Modelo e esforço" separado e vale para subagente e chat novo; chat esperando resposta é procurado no grupo (não em `linked`); item 6 do fim de tarefa reorganizado em tópicos; `get_usage` junto com a gravação do passo 1 (antes era circular com o commit); oferta recusada fica no COMBINADOS e não volta. Ensaio Sonnet geral: decisões certas.
@@ -24,4 +25,4 @@ Versão: 16
 - 2026-11-16 conferido no uso real: cartão do sucessor funcionou (chat antigo arquivado, sucessor ficou vivo e no grupo). Agrupamento funciona, mas chat aberto por outro chat fica aninhado e só se move junto com o pai (regra corrigida). Nome do git: neste PC já está configurado, a regra não dispara; corrigida para não pedir nome digitado em botão.
 
 ## PENDÊNCIAS
-1. Medir uma semana (`chat-traffic-uso.csv` nos projetos) e comparar pelo `relatorio.py` (ver DESENVOLVER.md, passo 5) — a partir de 23/11/2026.
+1. Em 30/11/2026: rodar o `relatorio.py` nos boletos e comparar com a semana de 16 a 23/11 (aqui 175 mil, chat novo 319 mil, 0 tarefas em Sonnet). Se não melhorou, rever as regras de custo.
