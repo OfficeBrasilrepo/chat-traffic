@@ -1,4 +1,4 @@
-Versão: 20
+Versão: 21
 
 # Continuar — chat-traffic
 
@@ -27,4 +27,5 @@ Versão: 20
 - 2026-11-16 conferido no uso real: cartão do sucessor funcionou (chat antigo arquivado, sucessor ficou vivo e no grupo). Agrupamento funciona, mas chat aberto por outro chat fica aninhado e só se move junto com o pai (regra corrigida). Nome do git: neste PC já está configurado, a regra não dispara; corrigida para não pedir nome digitado em botão.
 
 ## PENDÊNCIAS
+- A partir de 30/11/2026: medir a v2 nos boletos (`relatorio.py --desde 2026-11-24`), preencher a tabela do `DESEMPENHO.md` e decidir com o usuário (botões): manter v2 ou cortar ao essencial. Em 23/11 ainda não havia nenhuma linha da v2.
 1. Em 30/11/2026: nos boletos, `python ~/.claude/skills/chat-traffic/scripts/relatorio.py --desde 2026-11-24`, preencher a tabela da v2 no `DESEMPENHO.md` e decidir pela regra escrita lá (manter v2 ou cortar ao essencial).
