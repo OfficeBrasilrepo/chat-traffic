@@ -1,4 +1,4 @@
-Versão: 17
+Versão: 19
 
 # Continuar — chat-traffic
 
@@ -6,6 +6,7 @@ Versão: 17
 (nenhum)
 
 ## ESTADO ATUAL
+- 2026-11-23: buraco corrigido: chat Sonnet não abre chat Opus (a ferramenta ignora modelo acima do próprio), e um Opus se arquivava sem sucessor só porque havia um Sonnet aberto. Agora, ao arquivar, conta só outro `<projeto> · principal` aberto: há → arquiva; não há e é Opus → propõe sucessor (herda Opus); não há e é Sonnet → não arquiva, pede ao usuário chat novo em Opus + `/chat-traffic` (saída de emergência também no README). Linha global trocada (README e ~/.claude/CLAUDE.md deste PC; outro PC: `git pull` e a skill troca sozinha). Limpeza foi para `modelos/limpeza.md`: SKILL.md 12,0 mil (no teto). Testes ok; ensaio Sonnet acertou A/B/D/E e achou o "Senão" ambíguo no caso com principal aberto (corrigido, não re-ensaiado). Não testado no uso real.
 - 2026-11-23: medição de 1 semana (boletos, 17 tarefas): todas Opus, chats com 175 mil (aqui) e 319 mil (chat novo) em média; "principal" a 379 mil; CONTINUAR.md dos boletos 19,6 mil e COMBINADOS.md 18,6 mil. O gasto vem do tamanho dos chats somado à arrumação passo a passo. Correções: acima de ~200 mil nenhuma tarefa nova no chat (nem no principal); fim de tarefa numa só mensagem; COMBINADOS até ~8 mil (limpar.py --arquivo COMBINADOS.md --versao 0); código comum com padrão existente vai sempre para Sonnet; chat Sonnet não abre chat nem delega e o principal é sempre Opus. SKILL.md 12,5 mil (pouco acima do teto). Próxima medição: comparar a semana de 23 a 30/11 com esta.
 - 2026-11-18: /code-review da skill inteira, 10 achados corrigidos: relatório usa o contexto do fim (antes mostrava 0k) e pula linha com vírgula em vez de quebrar; .gitattributes deixa .bat/.cmd/.ps1 em CRLF; resumo.md separa chat e subagente (subagente devolve dúvida e não mexe no CONTINUAR nem comita); abrir chat não repete checagens de instalação (linha global já em contexto; oferta registrada no COMBINADOS); alarme e limpar aceitam BOM; alarme reconhece seção "PENDENTE COM …"/"ESPERANDO"; README: CSV ao lado do CONTINUAR; limpeza lê o arquivo inteiro com números. Relatório real dos boletos agora mostra contexto (aqui 136k, chat novo 319k).
 - 2026-11-18: uso real: o "consumo real Ricoh", único chat aberto dos boletos e já com a skill relida, sugeriu arquivar a si mesmo só no texto, sem conferir se era o único nem propor sucessor. Correção: a regra do único chat foi para a linha do `~/.claude/CLAUDE.md` (sempre em contexto, inclusive depois de compactar); a skill troca a linha antiga pela nova; sugerir arquivar é sempre com botões.

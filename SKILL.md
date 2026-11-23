@@ -33,15 +33,15 @@ Antes de tudo: tarefa que cabe numa conversa só (um script, um ajuste de poucos
 2. Renomeie este chat para `<projeto> · <tarefa>` (`set_session_title`, `self`) e ponha-o no grupo `<projeto>` da barra lateral (`list_groups`; sem grupo, `create_group`; `move_sessions` com `self`; recusou por estar aninhado: inclua o chat pai que o erro nomeia, se for do projeto; senão, fique sem grupo), tudo no mesmo passo da leitura.
 3. Arquivo com o mesmo papel de um dos 4 (TODO, NOTAS, PROGRESS, `AGENTS.md`, docs de estado)? **Nunca dois com o mesmo papel**: junte no da skill e deixe no antigo uma linha apontando. Falta algum dos 4? Monte pelo git e README; pergunte (botões) só regras e publicação sem pista.
 4. `CONTINUAR.md` sem `Versão:` nem `## EM USO`: acrescente os dois no topo, como no modelo (`Versão: 1`).
-5. `CONTINUAR.md` com mais de ~10 mil caracteres ou `COMBINADOS.md` com mais de ~8 mil: **limpe antes de trabalhar, sempre** (`HISTORICO.md` reservado por outro chat: limpe depois). A limpeza é a exceção à leitura só do topo: leia o arquivo inteiro com números de linha, escolha as concluídas e rode, na pasta do arquivo, `python ~/.claude/skills/chat-traffic/scripts/limpar.py --versao <N lida> 12-40 55`: ele move sem mudar uma letra para o `HISTORICO.md`, confere que nada se perdeu, soma 1 na versão e recusa se outro chat gravou (`COMBINADOS.md`: `--arquivo COMBINADOS.md --versao 0`). Commit próprio da limpeza.
+5. `CONTINUAR.md` com mais de ~10 mil caracteres ou `COMBINADOS.md` com mais de ~8 mil: **limpe antes de trabalhar, sempre**, seguindo `modelos/limpeza.md`.
 
 ## 3. Em cada tarefa: onde fazer
 
-Veja o tamanho deste chat com `get_usage` quando a tarefa for longa: `tokensUsed` decide o custo (limites em mil abaixo), `percentUsed` o risco de compactar. Sem ela, estime pelo tamanho da conversa. Escolha a primeira opção que serve:
+Tarefa longa: veja `get_usage` (`tokensUsed` decide o custo, em mil abaixo; `percentUsed`, o risco de compactar). Sem ela, estime pela conversa. Escolha a primeira opção que serve:
 
 1. **Aqui**: tarefa curta (até ~12 passos) ou este chat com menos de ~150 mil de contexto. **Acima de ~200 mil, nenhuma tarefa nova aqui**, nem curta e nem no `principal`: grave no `CONTINUAR.md`, abra o chat novo para ela e proponha arquivar este (seção 6).
 2. **Subagente** (ferramenta Agent, com `model`): pedaço desta tarefa cujo resultado você precisa já (ler muitos arquivos, buscar, revisar, testar). Sonnet para ler, buscar e executar pedido fechado; o mesmo modelo deste chat para revisar. Não serve para trabalho que deve durar além deste turno, que o usuário quer acompanhar ou que publica.
-3. **Chat parado do mesmo assunto** (`list_sessions`, ocioso): `SendMessage` com resumo curto. Barato **só se** ele parou há menos de 1 hora **ou** tem menos de ~100 mil de contexto. Nunca para chat ocupado nem arquivado (desarquivar regrava tudo: chat novo lê o `CONTINUAR.md`). Pedido que é de outro chat aberto do grupo: mande para ele por esta mesma regra.
+3. **Chat parado do mesmo assunto** (`list_sessions`, ocioso): `SendMessage` com resumo curto. Barato **só se** ele parou há menos de 1 hora **ou** tem menos de ~100 mil de contexto. Nunca para chat ocupado nem arquivado (desarquivar regrava tudo). Pedido que é de outro chat aberto do grupo: mande para ele por esta mesma regra.
 4. **Chat novo** (`start_session`, `cwd` na raiz, `title` `<projeto> · <tarefa>`). Antes, `list_sessions` do grupo: já existe chat (ou cartão que você propôs) com essa função? Use-o ou espere; nunca proponha outro. Este chat fora do grupo? Entre nele antes (seção 2, passo 2): o chat novo fica pendurado neste e só entra junto. Serve para: qualquer tarefa saindo de chat acima de ~200 mil; tarefa longa (~12 passos ou mais) saindo de chat acima de ~150 mil; ou trabalho que é uma entrega própria (branch, PR, publicação); ou depois de uma pausa longa num chat grande.
 
 **Modelo e esforço** (`model`, `effort`) para subagente e chat novo:
@@ -52,22 +52,21 @@ Veja o tamanho deste chat com `get_usage` quando a tarefa for longa: `tokensUsed
 
 Para subagente, chat parado ou chat novo, escreva o pedido pelo `modelos/resumo.md`. Na dúvida entre duas opções, fique com a de menos passagens: cada passagem perde detalhe.
 
-**Cache (o que decide a conta).** Reler o que está no cache custa 10%; gravar no cache custa ~200% (no app o cache dura 1 hora). Cada passo relê o chat inteiro: num chat de 280 mil, ~28 mil por passo.
-- **Chat parado há mais de 1 hora perdeu o cache**: acordá-lo regrava tudo a ~200%. Depois de pausa longa, chat grande com tarefa nova → chat novo.
-- Não passe a **publicação** para outro chat: ele redescobre tudo e corre risco.
+**Cache (o que decide a conta).** Reler o que está no cache custa 10%; gravar no cache custa ~200%. Cada passo relê o chat inteiro: num chat de 280 mil, ~28 mil por passo.
+- **Chat parado há mais de 1 hora perdeu o cache**: acordá-lo regrava tudo a ~200%.
 
 ## 4. Sem conflito entre chats
 
 No topo do `CONTINUAR.md` (ver o modelo): `Versão: N` na 1ª linha e, em `## EM USO`, uma linha por chat: `EM USO: <chat> · <arquivos> · desde <AAAA-MM-DD HH:MM>`; cada chat só mexe na própria.
 
 - **Ao ler**, guarde o número da versão.
-- **Ao gravar** (inclusive a própria reserva), use a ferramenta Edit, não o shell: ela recusa se o arquivo mudou desde a sua leitura, sem passo extra. Recusou ou a `Versão:` mudou? Releia o topo, junte sua mudança com a nova e grave. Toda gravação depois da criação soma 1 na versão.
+- **Ao gravar** (inclusive a própria reserva), use Edit, não o shell: ela recusa se o arquivo mudou desde a sua leitura. Recusou ou a `Versão:` mudou? Releia o topo, junte sua mudança com a nova e grave. Toda gravação depois da criação soma 1 na versão.
 - **Reserva**: antes de mexer em arquivos, acrescente sua linha `EM USO:` na seção `## EM USO` (sem nenhuma, `(nenhum)`). Se outra linha já reserva os mesmos arquivos, não mexa: trabalhe em outra coisa ou pergunte. Linha com mais de 24 h vale como abandonada: **pergunte com botões** antes de assumir. Com o OK, troque a linha dela pela sua; sem OK, faça outra coisa.
 - **Commit a cada gravação** do `CONTINUAR.md` (só os arquivos que você mudou; nunca `git add -A` com outros chats na pasta).
 
 ## 5. Publicar
 
-Cada chat publica o próprio trabalho, seguindo o `COMBINADOS.md` (o executado por Sonnet, quem pediu revisa e publica). Sem regra de publicação no `COMBINADOS.md` (ou "perguntar ao dono"): não publique; pergunte com botões e grave a resposta lá como decisão.
+Cada chat publica o próprio trabalho, seguindo o `COMBINADOS.md`. Sem regra de publicação no `COMBINADOS.md` (ou "perguntar ao dono"): não publique; pergunte com botões e grave a resposta lá como decisão.
 
 **Nada fica sem publicar porque outro chat está em andamento.** Terminou e não pode publicar ainda (outro chat reservou o arquivo ou publica antes)? Siga `modelos/aguarda-publicar.md`.
 
@@ -91,7 +90,7 @@ Faça os passos 1 a 5 **numa só mensagem** (Edit do `CONTINUAR.md` e do `HISTOR
 5. Um commit só com os arquivos que mudaram. Linha `AGUARDA PUBLICAR` esperando por você: passo 3 de `modelos/aguarda-publicar.md`.
 6. **Arquivar chats** (grave tudo no `CONTINUAR.md` antes). Vale qualquer um:
    - (a) este, com a tarefa terminada e o `percentUsed` do `get_usage` do passo 4 acima de ~60% (sem a ferramenta: conversa muito longa); (b) este, sem trabalho previsto; (c) um chat aberto por este que já acabou; (d) chats do grupo parados há mais de 1 dia, todos num botão só, depois de passar ao `CONTINUAR.md` o que só existia na conversa deles (`list_events`; decisão esperada vira pendência).
-   - **Nenhum outro chat aberto do projeto** (`list_sessions` com `group` = projeto, que não lista este; sem grupo, títulos `<projeto> · …`; na dúvida, trate como único)? Antes de arquivar este, proponha o sucessor com `start_session` (`own_initiative`, `cwd` na raiz, `title` `<projeto> · principal`, modelo e esforço do trabalho comum, resumo: "Leia CLAUDE.md e o topo do CONTINUAR.md, mostre ao usuário onde o projeto está (até 8 linhas) e continue"). Iniciado o sucessor, `detach_session` nele antes de arquivar este: senão ele é arquivado junto.
+   - Antes de arquivar este, veja se há **outro `<projeto> · principal` aberto** (`list_sessions` com `group` = projeto, que não lista este; outros chats não contam: podem ser Sonnet; na dúvida, não há). Há: arquive sem sucessor. Não há e este chat é Sonnet: não arquive; peça ao usuário (botões "Abri o chat Opus" / "Ainda não") que abra chat novo em Opus e diga `/chat-traffic`. Não há e este é Opus: proponha o sucessor com `start_session` (`own_initiative`, `cwd` na raiz, `title` `<projeto> · principal`, sem `model`: herda o Opus deste, resumo: "Leia CLAUDE.md e o topo do CONTINUAR.md, mostre ao usuário onde o projeto está (até 8 linhas) e continue"). Iniciado o sucessor, `detach_session` nele antes de arquivar este: senão ele é arquivado junto.
    - Sugerir arquivar é sempre pergunta com botões, nunca só no texto. O quadro de próximo passo traz uma pergunta só: arquivar. Use a ação `archive` do `wrap_up` se houver; senão, botões ("Pode arquivar" / "Ainda não"). Arquivando outro chat (`archive_session`) e o app recusa por controle remoto: `set_remote_control` desligado e de novo. Arquivar um chat leva junto os chats terminados pendurados nele.
    - Depois de arquivar outros, mostre ao usuário **onde o projeto está** em até 8 linhas do `CONTINUAR.md`: últimas entregas, o que ele aprovou, o que espera por ele.
 
